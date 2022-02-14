@@ -21,13 +21,9 @@ use function ucfirst;
  * @method static MinionType FARMING()
  */
 
-/*
- * Basic type of the minions.
- */
 class MinionType implements MinionNBT{
 	use EnumTrait;
 
-	// TODO: Add more types.
 	protected static function setup() : void{
 		self::registerAll(
 			new self("mining"),
@@ -36,36 +32,23 @@ class MinionType implements MinionNBT{
 	}
 
 	/**
-	 * Gets type from name.
-	 *
-	 * @return MinionType|null Returns null if not found.
+	 * @return MinionType|null 
 	 */
 	public static function fromString(string $typeName) : ?self{
 		self::checkInit();
 		return self::$members[mb_strtoupper($typeName)] ?? null;
 	}
 
-	/**
-	 * Returns the name of the type with first letter uppercased.
-	 * Example: "mining" -> "Mining".
-	 */
 	public function typeName() : string{
 		return ucfirst($this->name());
 	}
 
-	/**
-	 * @see MinionNBT::serializeTag()
-	 */
 	public function serializeTag() : StringTag{
 		return new StringTag($this->name());
 	}
 
 	/**
 	 * @param StringTag $tag
-	 *
-	 * @return MinionType
-	 *
-	 * @see MinionNBT::deserializeTag()
 	 */
 	public static function deserializeTag(Tag $tag) : self{
 		if(!$tag instanceof StringTag){

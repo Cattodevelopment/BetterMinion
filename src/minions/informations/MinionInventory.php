@@ -13,18 +13,11 @@ use pocketmine\nbt\tag\Tag;
 use function array_map;
 use function get_class;
 
-/**
- * Inventory for the minions based on SimpleInventory.
- */
 class MinionInventory extends SimpleInventory implements MinionNBT{
-	// R.I.P PM3 feature.
 	public function setSize(int $size) : void{
 		$this->slots->setSize($size);
 	}
 
-	/**
-	 * @see MinionNBT::serializeTag()
-	 */
 	public function serializeTag() : ListTag{
 		return new ListTag(
 			array_map(
@@ -37,10 +30,6 @@ class MinionInventory extends SimpleInventory implements MinionNBT{
 
 	/**
 	 * @param ListTag $tag
-	 *
-	 * @return MinionInventory
-	 *
-	 * @see MinionNBT::deserializeTag()
 	 */
 	public static function deserializeTag(Tag $tag) : self{
 		if(!$tag instanceof ListTag){

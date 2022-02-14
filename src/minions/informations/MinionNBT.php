@@ -25,14 +25,10 @@ interface MinionNBT{
 	public const AUTO_SELLER = "autoSeller";
 	public const COMPACTOR = "compactor";
 	public const EXPANDER = "expander";
-	/**
-	 * Serializes data to NBT.
-	 */
+
 	public function serializeTag();
 	/**
-	 * Deserializes data from NBT.
-	 *
-	 * @deprecated Should initialize from class and use MinionFactory::spawnMinion() instead.
+	 * @deprecated 
 	 */
 	public static function deserializeTag(Tag $tag);
 }

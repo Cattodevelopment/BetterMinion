@@ -6,11 +6,6 @@ namespace Mcbeany\BetterMinion\utils;
 
 use Mcbeany\BetterMinion\BetterMinion;
 
-/**
- * SingletonTrait :D
- * Why? Because I hate PocketMine's default singleton implementation.
- * Easy to use & understand.
- */
 trait SingletonTrait{
 	/** @var static $instance */
 	private static $instance;

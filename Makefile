@@ -1,12 +1,16 @@
 PHP = $(shell which php) -dphar.readonly=0
 COMPOSER = dev/composer.phar
-BIN = vendor/bin
+DEV = dev
+VENDOR = vendor
+BIN = $(VENDOR)/bin
 
-install:
-	cd dev && wget -O - https://getcomposer.org/installer | $(PHP)
+dev:
+	mkdir -p $(DEV)
+	cd $(DEV)
+	wget -O - https://getcomposer.org/installer | $(PHP)
 
-vendor: Makefile
-	$(PHP) $(COMPOSER) install && $(PHP) $(COMPOSER) update
+vendor:
+	$(PHP) $(COMPOSER) update
 
 fmt:
 	$(PHP) $(BIN)/php-cs-fixer fix src

@@ -21,9 +21,6 @@ use pocketmine\player\Player;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-/**
- * Base class for all minions.
- */
 abstract class BaseMinion extends Human{
 	public const MAX_TICKDIFF = 20;
 
@@ -35,9 +32,6 @@ abstract class BaseMinion extends Human{
 	protected int $tickWait = 0;
 	protected bool $isWorking = true;
 
-	/**
-	 * Constructor of the minions, I think.
-	 */
 	protected function initEntity(CompoundTag $nbt) : void{
 		parent::initEntity($nbt);
 		$this->owner = Uuid::uuid3(Uuid::NIL, $nbt->getString(MinionNBT::OWNER));
@@ -58,9 +52,6 @@ abstract class BaseMinion extends Human{
 		$this->setNameTagAlwaysVisible(false);
 	}
 
-	/**
-	 * Save the minion's information.
-	 */
 	public function saveNBT() : CompoundTag{
 		return parent::saveNBT()
 			->setString(MinionNBT::OWNER, $this->owner->toString())
@@ -69,9 +60,6 @@ abstract class BaseMinion extends Human{
 			->setTag(MinionNBT::INVENTORY, $this->minionInventory->serializeTag());
 	}
 
-	/**
-	 * Do check thing before start working.
-	 */
 	public function onUpdate(int $currentTick) : bool{
 		if($this->isWorking()){
 			$lastItem = $this->minionInventory->getItem($this->minionInventory->getSize() - 1);
@@ -87,9 +75,6 @@ abstract class BaseMinion extends Human{
 		return parent::onUpdate($currentTick);
 	}
 
-	/**
-	 * Minion does stuff here.
-	 */
 	protected function entityBaseTick(int $tickDiff = 1) : bool{
 		if(!$this->isWorking()){
 			return parent::entityBaseTick($tickDiff);
@@ -120,46 +105,30 @@ abstract class BaseMinion extends Human{
 		parent::setNameTag($name);
 	}
 
-	/**
-	 * Returns true if the minion is working and false otherwise.
-	 */
 	public function isWorking() : bool{
 		return $this->isWorking;
 	}
 
-	/**
-	 * Force the minion to stop working.
-	 */
 	public function stopWorking() : void{
 		$this->isWorking = false;
 	}
 
-	/**
-	 * Force the minion to continue working.
-	 */
 	public function continueWorking() : void{
 		$this->isWorking = true;
 	}
 
 	/**
-	 * Target could be a block or a living entity.
-	 *
 	 * @return \Generator|Block[]
 	 */
 	public function getWorkingTargets() : \Generator{
 		yield;
 	}
 
-	/**
-	 * Returns the minion's action time
-	 */
 	public function getActionTime() : int{
 		return 20; // TODO: Time based on level
 	}
 
 	/**
-	 * Add stuff to the minion's inventory.
-	 *
 	 * @param Item[] $drops
 	 */
 	protected function addStuff(array $drops) : void{
@@ -173,10 +142,6 @@ abstract class BaseMinion extends Human{
 		}
 	}
 
-	/**
-	 * Take stuff from the minion's inventory and add to player's inventory.
-	 * Returns true if the player can add all items from the itemstack and false otherwise.
-	 */
 	public function takeStuff(int $slot, Player $player) : bool{
 		$item = $this->minionInventory->getItem($slot);
 		$addable = $player->getInventory()->getAddableItemQuantity($item);
@@ -208,9 +173,6 @@ abstract class BaseMinion extends Human{
 		return false;
 	}*/
 
-	/**
-	 * Handle minion's actions.
-	 */
 	protected function onAction() : void{
 	}
 
@@ -224,57 +186,33 @@ abstract class BaseMinion extends Human{
 	protected function doOfflineAction(int $times) : void{
 	}
 
-	/**
-	 * Do minion animation
-	 */
 	protected function minionAnimationTick(int $tickDiff = 1) : void{
 	}
 
-	/**
-	 * Returns the owner of the minion.
-	 */
 	public function getOwner() : UuidInterface{
 		return $this->owner;
 	}
 
-	/**
-	 * Returns the owner's name of the minion.
-	 */
 	public function getOwnerName() : string{
 		return $this->ownerName;
 	}
 
-	/**
-	 * Returns original name of the minion, include its owner.
-	 */
 	public function getOriginalNameTag() : string{
 		return $this->ownerName . "'s Minion";
 	}
 
-	/**
-	 * Returns the minion's working radius.
-	 */
 	public function getWorkingRadius() : int{
 		return $this->minionInformation->getUpgrade()->hasExpander() ? 3 : 2;
 	}
 
-	/**
-	 * Returns the minion's information.
-	 */
 	public function getMinionInformation() : MinionInformation{
 		return $this->minionInformation;
 	}
 
-	/**
-	 * Returns the minion's inventory.
-	 */
 	public function getMinionInventory() : MinionInventory{
 		return $this->minionInventory;
 	}
 
-	/**
-	 * Returns the minion's tool.
-	 */
 	public function getTool() : Item{
 		return match($this->minionInformation->getRealTarget()->getBreakInfo()->getToolType()){
 			BlockToolType::AXE => VanillaItems::IRON_AXE(),

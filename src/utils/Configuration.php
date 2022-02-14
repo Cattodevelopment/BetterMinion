@@ -17,9 +17,6 @@ class Configuration{
 		$this->getConfig()->setDefaults($this->defaults());
 	}
 
-	/**
-	 * Returns default minion's spawner.
-	 */
 	final public function minion_spawner() : Item{
 		$name = $this->get("spawner");
 		$item = Utils::parseItem(is_string($name) ? $name : "");
@@ -48,8 +45,6 @@ class Configuration{
 	}
 
 	/**
-	 * Returns default configurations.
-	 *
 	 * @return array<string, mixed>
 	 */
 	public function defaults() : array{
