@@ -96,12 +96,12 @@ abstract class BaseMinion extends Human{
 		return parent::entityBaseTick($tickDiff);
 	}
 
-	public function setNameTag(string $name = "") : void{
-		if(empty($name)){
+	public function setNameTag(?string $name = null) : void{
+		if($name === null){
 			$this->setNameTagVisible(false);
 		}
 		$this->setNameTagVisible();
-		parent::setNameTag($name);
+		parent::setNameTag($name ?? "");
 	}
 
 	public function isWorking() : bool{
