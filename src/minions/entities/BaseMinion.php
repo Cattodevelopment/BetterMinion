@@ -62,8 +62,7 @@ abstract class BaseMinion extends Human{
 
 	public function onUpdate(int $currentTick) : bool{
 		if($this->isWorking()){
-			$lastItem = $this->minionInventory->getItem($this->minionInventory->getSize() - 1);
-			if(!$lastItem->isNull() && $lastItem->getCount() == $lastItem->getMaxStackSize()){
+			if($this->minionInventory->isFull()){
 				$this->stopWorking();
 				$this->setNameTag("My inventory is full :<");
 				return true;
@@ -180,8 +179,6 @@ abstract class BaseMinion extends Human{
 	 * As @NgLamVN explained, onOfflineAction will be executed if there is no viewer or minion is not loaded, the thing onOfflineAction
 	 * will do is just adding drops to the inventory instead of sending block breaking animation, thus can reduce server laggy.
 	 * Very cool :ayyyy:
-	 *
-	 * @pararm int $times Number of break time
 	 */
 	protected function doOfflineAction(int $times) : void{
 	}

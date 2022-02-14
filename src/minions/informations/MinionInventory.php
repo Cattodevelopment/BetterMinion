@@ -6,6 +6,7 @@ namespace Mcbeany\BetterMinion\minions\informations;
 
 use pocketmine\inventory\SimpleInventory;
 use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
@@ -16,6 +17,18 @@ use function get_class;
 class MinionInventory extends SimpleInventory implements MinionNBT{
 	public function setSize(int $size) : void{
 		$this->slots->setSize($size);
+	}
+
+	public function reorder() : void{
+		$this->setContents(array_map(
+			fn (?Item $item) => $item ?? VanillaItems::AIR(),
+			array_values($this->getContents())
+		));
+	}
+
+	public function isFull() : bool{
+		$lastItem = $this->getItem($this->getSize() - 1);
+		return !$lastItem->isNull() and $lastItem->getCount() == $lastItem->getMaxStackSize();
 	}
 
 	public function serializeTag() : ListTag{
