@@ -33,7 +33,9 @@ class MinionType implements MinionNBT{
 
 	public static function fromString(string $typeName) : ?self{
 		self::checkInit();
-		return self::$members[mb_strtoupper($typeName)] ?? null;
+		/** @var self $type */
+		$type = self::$members[mb_strtoupper($typeName)] ?? null;
+		return $type;
 	}
 
 	public function typeName() : string{
@@ -51,6 +53,10 @@ class MinionType implements MinionNBT{
 		if(!$tag instanceof StringTag){
 			throw new \InvalidArgumentException("Expected " . StringTag::class . ", got " . get_class($tag));
 		}
-		return self::fromString($tag->getValue());
+		$type = self::fromString($tag->getValue());
+		if($type === null){
+			throw new \InvalidArgumentException("Expected " . self::class . ", got null");
+		}
+		return $type;
 	}
 }

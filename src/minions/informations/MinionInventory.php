@@ -12,6 +12,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\Tag;
 use function array_map;
+use function array_values;
 use function get_class;
 
 class MinionInventory extends SimpleInventory implements MinionNBT{
@@ -49,11 +50,12 @@ class MinionInventory extends SimpleInventory implements MinionNBT{
 			throw new \InvalidArgumentException("Expected " . ListTag::class . ", got " . get_class($tag));
 		}
 		$inventory = new self(MinionInformation::MAX_LEVEL);
+		/** @var callable $callback */
+		$callback = function(CompoundTag $tag) : Item{
+			return Item::nbtDeserialize($tag);
+		};
 		$inventory->setContents(
-			array_map(
-				fn (CompoundTag $tag) => Item::nbtDeserialize($tag),
-				$tag->getValue()
-			)
+			array_map($callback, $tag->getValue())
 		);
 		return $inventory;
 	}

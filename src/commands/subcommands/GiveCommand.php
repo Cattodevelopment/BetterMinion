@@ -21,6 +21,9 @@ final class GiveCommand extends BaseSubCommand{
 		$this->registerArgument(2, new RawStringArgument("player", true));
 	}
 
+	/**
+	 * @param array<string, mixed> $args
+	 */
 	public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
 		if(count($args) < 2){
 			return;
@@ -45,11 +48,14 @@ final class GiveCommand extends BaseSubCommand{
 			$player = $sender;
 		}
 		if(isset($args["player"])){
-			$player = $sender->getServer()->getPlayerByPrefix($args["player"]);
+			/** @var string $name */
+			$name = $args["player"];
+			$player = $sender->getServer()->getPlayerByPrefix($name);
 		}
 		if($player === null){
 			$sender->sendMessage("Player not found");
+			return;
 		}
-		Utils::giveItem($player, MinionFactory::getInstance()->getSpawner($type, $target->getIdInfo()));
+		Utils::giveItem($player, MinionFactory::getInstance()->getSpawner($type, $target));
 	}
 }

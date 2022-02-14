@@ -12,7 +12,7 @@ use Mcbeany\BetterMinion\minions\informations\MinionType;
 use Mcbeany\BetterMinion\minions\informations\MinionUpgrade;
 use Mcbeany\BetterMinion\utils\Configuration;
 use Mcbeany\BetterMinion\utils\SingletonTrait;
-use pocketmine\block\BlockIdentifier;
+use pocketmine\block\Block;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
@@ -35,7 +35,7 @@ final class MinionFactory{
 	protected function onInit() : void{
 	}
 
-	public function getSpawner(MinionType $type, BlockIdentifier $target) : Item{
+	public function getSpawner(MinionType $type, Block $target) : Item{
 		$item = Configuration::getInstance()->minion_spawner();
 		$item->setNamedTag($item->getNamedTag()->setTag(
 			MinionNBT::INFORMATION,

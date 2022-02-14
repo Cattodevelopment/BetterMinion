@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\entities;
 
-use Mcbeany\BetterMinion\events\minions\MinionCollectResourcesEvent;
+use Mcbeany\BetterMinion\events\minions\MinionCollectResourceEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionInventory;
 use Mcbeany\BetterMinion\minions\informations\MinionNBT;
 use Mcbeany\BetterMinion\utils\Configuration;
 use pocketmine\block\Block;
-use pocketmine\block\BlockToolType;
 use pocketmine\entity\Human;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
@@ -119,7 +118,8 @@ abstract class BaseMinion extends Human{
 	/**
 	 * @return \Generator|Block[]
 	 */
-	public function getWorkingTargets() : \Generator{
+	protected function getWorkingTargets() : \Generator{
+		/** @phpstan-ignore-next-line */
 		yield;
 	}
 
@@ -132,7 +132,7 @@ abstract class BaseMinion extends Human{
 	 */
 	protected function addStuff(array $drops) : void{
 		foreach($drops as $drop){
-			$event = new MinionCollectResourcesEvent($this, $drop);
+			$event = new MinionCollectResourceEvent($this, $drop);
 			$event->call();
 			if($event->isCancelled()){
 				continue;
@@ -211,14 +211,6 @@ abstract class BaseMinion extends Human{
 	}
 
 	public function getTool() : Item{
-		return match($this->minionInformation->getRealTarget()->getBreakInfo()->getToolType()){
-			BlockToolType::AXE => VanillaItems::IRON_AXE(),
-			BlockToolType::HOE => VanillaItems::IRON_HOE(),
-			BlockToolType::PICKAXE => VanillaItems::IRON_PICKAXE(),
-			BlockToolType::SHOVEL => VanillaItems::IRON_SHOVEL(),
-			BlockToolType::SWORD => VanillaItems::IRON_SWORD(),
-			BlockToolType::SHEARS => VanillaItems::SHEARS(),
-			default => VanillaItems::AIR()
-		};
+		return VanillaItems::AIR();
 	}
 }

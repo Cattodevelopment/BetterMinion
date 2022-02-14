@@ -6,8 +6,8 @@ namespace Mcbeany\BetterMinion\minions\informations;
 
 use pocketmine\block\Block;
 use pocketmine\block\BlockFactory;
-use pocketmine\block\BlockIdentifier;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
 use function get_class;
 
@@ -16,7 +16,7 @@ class MinionInformation implements MinionNBT{
 	public const MAX_LEVEL = 15;
 	public function __construct(
 		private MinionType $type,
-		private BlockIdentifier $target,
+		private Block $target,
 		private MinionUpgrade $upgrade,
 		private int $level = self::MIN_LEVEL
 		// TODO
@@ -27,17 +27,8 @@ class MinionInformation implements MinionNBT{
 		return $this->type;
 	}
 
-	public function getTarget() : BlockIdentifier{
+	public function getTarget() : Block{
 		return $this->target;
-	}
-
-	public function getRealTarget() : Block{
-		/** @var Block $block */
-		$block = BlockFactory::getInstance()->get(
-			$this->target->getBlockId(),
-			$this->target->getVariant()
-		);
-		return $block;
 	}
 
 	public function getUpgrade() : MinionUpgrade{
@@ -53,13 +44,16 @@ class MinionInformation implements MinionNBT{
 	}
 
 	protected function targetSerialize() : CompoundTag{
+		$info = $this->target->getIdInfo();
 		return CompoundTag::create()
-			->setInt(MinionNBT::BLOCK_ID, $this->target->getBlockId())
-			->setInt(MinionNBT::VARIANT, $this->target->getVariant());
+			->setInt(MinionNBT::BLOCK_ID, $info->getBlockId())
+			->setInt(MinionNBT::VARIANT, $info->getVariant());
 	}
 
-	protected static function targetDeserialize(CompoundTag $tag) : BlockIdentifier{
-		return new BlockIdentifier(
+	protected static function targetDeserialize(CompoundTag $tag) : Block{
+		/** @var BlockFactory $factory */
+		$factory = BlockFactory::getInstance();
+		return $factory->get(
 			$tag->getInt(MinionNBT::BLOCK_ID),
 			$tag->getInt(MinionNBT::VARIANT)
 		);
@@ -80,10 +74,22 @@ class MinionInformation implements MinionNBT{
 		if(!$tag instanceof CompoundTag){
 			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . get_class($tag));
 		}
+		$type = $tag->getTag(MinionNBT::TYPE);
+		$target = $tag->getTag(MinionNBT::TARGET);
+		$upgrade = $tag->getTag(MinionNBT::UPGRADE);
+		if(!$type instanceof StringTag){
+			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . ($type === null ? "null" : get_class($type)));
+		}
+		if(!$target instanceof CompoundTag){
+			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . ($target === null ? "null" : get_class($target)));
+		}
+		if(!$upgrade instanceof CompoundTag){
+			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . ($upgrade === null ? "null" :get_class($upgrade)));
+		}
 		return new self(
-			MinionType::deserializeTag($tag->getTag(MinionNBT::TYPE)),
-			self::targetDeserialize($tag->getTag(MinionNBT::TARGET)),
-			MinionUpgrade::deserializeTag($tag->getTag(MinionNBT::UPGRADE)),
+			MinionType::deserializeTag($type),
+			self::targetDeserialize($target),
+			MinionUpgrade::deserializeTag($upgrade),
 			$tag->getInt(MinionNBT::LEVEL)
 		);
 	}

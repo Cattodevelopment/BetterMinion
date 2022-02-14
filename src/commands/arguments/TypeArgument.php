@@ -19,6 +19,9 @@ class TypeArgument extends StringEnumArgument{
 		return MinionType::fromString($argument);
 	}
 
+	/**
+	 * @return string[]
+	 */
 	public function getEnumValues() : array{
 		return array_map(
 			fn (MinionType $type) : string => $type->name(),

@@ -26,9 +26,14 @@ interface MinionNBT{
 	public const COMPACTOR = "compactor";
 	public const EXPANDER = "expander";
 
+	/**
+	 * @return mixed
+	 */
 	public function serializeTag();
 	/**
-	 * @deprecated 
+	 * @deprecated
+	 *
+	 * @return mixed
 	 */
 	public static function deserializeTag(Tag $tag);
 }
