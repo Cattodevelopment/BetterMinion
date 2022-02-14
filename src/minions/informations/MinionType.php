@@ -31,9 +31,6 @@ class MinionType implements MinionNBT{
 		);
 	}
 
-	/**
-	 * @return MinionType|null 
-	 */
 	public static function fromString(string $typeName) : ?self{
 		self::checkInit();
 		return self::$members[mb_strtoupper($typeName)] ?? null;
