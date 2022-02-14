@@ -243,6 +243,9 @@ abstract class MinionEntity extends Human
 
                                 break;
                         }
+                        for ($i = 0; $i < 15; ++$i) {
+                            $action->getInventory()->setItem((int) (12 + ($i % 5) + (9 * floor($i / 5))), $this->getMinionInventory()->slotExists($i) ? $this->getMinionInventory()->getItem($i) : Item::get(BlockIds::STAINED_GLASS, 14)->setCustomName(TextFormat::YELLOW . 'Unlock at level ' . TextFormat::GOLD . Utils::getRomanNumeral(($i + 1))));
+                        }
                     }));
                     $menu->send($damager);
                     $menu->setInventoryCloseListener(function (Player $player, Inventory $inventory) use ($taskId): void {
