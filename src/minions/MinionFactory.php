@@ -6,6 +6,7 @@ namespace Mcbeany\BetterMinion\minions;
 
 use Mcbeany\BetterMinion\events\player\PlayerSpawnMinionEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
+use Mcbeany\BetterMinion\minions\entities\types\MiningMinion;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionNBT;
 use Mcbeany\BetterMinion\minions\informations\MinionType;
@@ -33,6 +34,7 @@ final class MinionFactory{
 	private array $minions = [];
 
 	protected function onInit() : void{
+        $this->register(MiningMinion::class, MinionType::MINING());
 	}
 
 	public function getSpawner(MinionType $type, Block $target) : Item{
