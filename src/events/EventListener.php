@@ -19,7 +19,7 @@ final class EventListener implements Listener{
 			$nbt = $item->getNamedTag()->getCompoundTag(MinionNBT::INFORMATION);
 			if($nbt !== null){
 				if(MinionFactory::getInstance()->spawnMinion(MinionInformation::deserializeTag($nbt), $player)){
-                    $item->pop();
+					$item->pop();
 					$player->getInventory()->setItemInHand($item);
 					$event->cancel();
 				}

@@ -34,7 +34,7 @@ final class MinionFactory{
 	private array $minions = [];
 
 	protected function onInit() : void{
-        $this->register(MiningMinion::class, MinionType::MINING());
+		$this->register(MiningMinion::class, MinionType::MINING());
 	}
 
 	public function getSpawner(MinionType $type, Block $target) : Item{
