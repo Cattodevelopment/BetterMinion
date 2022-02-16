@@ -28,8 +28,9 @@ abstract class BaseMinion extends Human{
 	protected MinionInformation $minionInformation;
 	protected MinionInventory $minionInventory;
 
-	protected int $tickWait = 0;
+	protected int $tickWait = 0, $tickWork = 0;
 	protected bool $isWorking = true;
+	protected mixed $target = null;
 
 	protected function initEntity(CompoundTag $nbt) : void{
 		parent::initEntity($nbt);
@@ -48,7 +49,6 @@ abstract class BaseMinion extends Human{
 		$this->minionInventory->setSize($this->minionInformation->getLevel());
 		$this->getInventory()->setItemInHand($this->getTool());
 		$this->setScale(Configuration::getInstance()->minion_scale());
-		$this->setNameTagAlwaysVisible(false);
 	}
 
 	public function saveNBT() : CompoundTag{
@@ -141,6 +141,10 @@ abstract class BaseMinion extends Human{
 		}
 	}
 
+	public function addDrops() : void{
+		$this->addStuff($this->minionInformation->getTarget()->getDrops($this->getTool()));
+	}
+
 	public function takeStuff(int $slot, Player $player) : bool{
 		$item = $this->minionInventory->getItem($slot);
 		$addable = $player->getInventory()->getAddableItemQuantity($item);
@@ -148,29 +152,6 @@ abstract class BaseMinion extends Human{
 		$this->minionInventory->setItem($slot, $item->setCount($item->getCount() - $addable));
 		return $item->isNull();
 	}
-
-	/*protected function getAirBlock() : ?Block{
-		foreach($this->getWorkingTargets() as $target){
-			if($target instanceof Block){
-				if($target->asItem()->isNull()){
-					return $target;
-				}
-			}
-		}
-		return null;
-
-	}
-
-	protected function isContainInvalidBlock() : bool{
-		foreach($this->getWorkingTargets() as $target){
-			if($target instanceof Block){
-				if($target->isSameType($this->minionInformation->getRealTarget()) && !$target->asItem()->isNull()){
-					return true;
-				}
-			}
-		}
-		return false;
-	}*/
 
 	protected function onAction() : void{
 	}

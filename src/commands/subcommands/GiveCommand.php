@@ -53,7 +53,6 @@ final class GiveCommand extends BaseSubCommand{
 			$player = $sender->getServer()->getPlayerByPrefix($name);
 		}
 		if($player === null){
-			$sender->sendMessage("Player not found");
 			return;
 		}
 		Utils::giveItem($player, MinionFactory::getInstance()->getSpawner($type, $target));

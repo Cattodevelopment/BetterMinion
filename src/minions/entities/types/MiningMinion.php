@@ -4,12 +4,31 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\entities\types;
 
+use Mcbeany\BetterMinion\events\minions\MinionStartWorkEvent;
+use Mcbeany\BetterMinion\events\minions\MinionWorkEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
+use pocketmine\block\Block;
 use pocketmine\block\BlockToolType;
+use pocketmine\block\VanillaBlocks;
+use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
+use pocketmine\math\Facing;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
+use pocketmine\network\mcpe\protocol\types\LevelEvent;
+use pocketmine\world\particle\BlockBreakParticle;
+use pocketmine\world\particle\BlockPunchParticle;
+use pocketmine\world\Position;
+use pocketmine\world\sound\BlockPunchSound;
 
 class MiningMinion extends BaseMinion{
+    protected bool $isMining = false;
+	/** @var ?Block $target */
+    protected mixed $target = null;
+
+    /**
+     * @return \Generator|Block[]
+     */
 	protected function getWorkingTargets() : \Generator{
 		$radius = $this->getWorkingRadius();
 		for($x = -$radius; $x <= $radius; ++$x){
@@ -19,6 +38,143 @@ class MiningMinion extends BaseMinion{
 				}
 				yield $this->getWorld()->getBlock($this->getPosition()->add($x, -1, $z));
 			}
+		}
+	}
+
+	protected function getAirPosition() : ?Position{
+		/** @var Block $target */
+		foreach($this->getWorkingTargets() as $target){
+			if($target->asItem()->isNull()){
+				return $target->getPosition();
+			}
+		}
+		return null;
+
+	}
+
+	protected function containInvalidBlock() : bool{
+		/** @var Block $target */
+		foreach($this->getWorkingTargets() as $target){
+			if(!$target->isSameType($this->getMinionInformation()->getTarget()) or !$target->asItem()->isNull()){
+				return true;
+			}
+		}
+		return false;
+	}
+
+    protected function place(Position $pos) : void{
+        $this->lookAt($pos);
+        $block = $this->getMinionInformation()->getTarget();
+        $this->getInventory()->setItemInHand($block->asItem());
+        $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
+        $pos->getWorld()->setBlock($pos, $block);
+    }
+
+    protected function startMine(Block $block) : void{
+        $this->getInventory()->setItemInHand($this->getTool());
+        $this->isMining = true;
+        $this->target = $block;
+        $breakTime = $block->getBreakInfo()->getBreakTime($this->getTool());
+        $breakSpeed = $breakTime * 20; // 20 ticks = 1 sec
+        $this->tickWork = (int) $breakSpeed;
+        if($this->tickWork > $this->getActionTime()) { //When mining time > action time will cause spaming breaking block ...
+            $this->stopWorking();
+            $this->setNameTag("Block break time is too long :(");
+            return;
+        }
+        if($breakSpeed > 0){
+            $breakSpeed = (int) (1 / $breakSpeed);
+        }else{
+            $breakSpeed = 1;
+        }
+        $pos = $block->getPosition();
+        $this->lookAt($block->getPosition());
+        $pos->getWorld()->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, 65535 * $breakSpeed, $pos));
+    }
+
+	protected function mine() : void{
+		$block = $this->target;
+		if(!$block instanceof Block){
+			return;
+		}
+		$pos = $block->getPosition();
+		$event = new MinionWorkEvent($this, $block->getPosition());
+		$event->call();
+		if($event->isCancelled()){
+			return;
+		}
+		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
+		$this->getWorld()->addParticle($pos, new BlockPunchParticle($block, Facing::opposite($this->getHorizontalFacing())));
+		$this->broadcastSound(new BlockPunchSound($block), $this->getViewers());
+	}
+
+	protected function onAction() : void{
+		if($this->containInvalidBlock()){
+			$this->setNameTag("This place is not perfect :(");
+			return;
+		}
+		$air = $this->getAirPosition();
+		if($air !== null){
+			$event = new MinionWorkEvent($this, $air);
+			$event->call();
+			if($event->isCancelled()){
+				return;
+			}
+			$this->place($air);
+			return;
+		}
+		if($this->target === null){
+			$area = iterator_to_array($this->getWorkingTargets());
+			shuffle($area);
+			/** @var Block $block */
+			foreach($area as $block){
+				$event = new MinionStartWorkEvent($this, $block->getPosition());
+				$event->call();
+				if($event->isCancelled()){
+					continue;
+				}
+				$this->startMine($block);
+				break;
+			}
+		}
+	}
+
+	protected function doOfflineAction(int $times) : void{
+		for($i = 0; $i < $times; $i++){
+			$this->addDrops();
+		}
+	}
+
+	protected function minionAnimationTick(int $tickDiff = 1) : void{
+		$target = $this->target;
+		if($target === null){
+			return;
+		}
+		$remainTick = $this->tickWork - $tickDiff;
+		$maxTick = BaseMinion::MAX_TICKDIFF * -1;
+		if($remainTick > 0){
+			$this->tickWork -= $tickDiff;
+			$this->mine();
+			return;
+		}
+		if($remainTick > $maxTick){
+			$this->tickWork = 0;
+			$block = clone $this->target;
+			$this->target = null;
+			if(!$block instanceof Block){
+				return;
+			}
+			$pos = $block->getPosition();
+			$pos->getWorld()->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
+			$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
+			$this->addDrops();
+			return;
+		}
+		if($remainTick < $maxTick){
+			$this->tickWork = 0;
+			// TODO: Hacks... Skip and just add stuff like offline action
+			$this->target = null;
+			$this->doOfflineAction(1);
 		}
 	}
 
