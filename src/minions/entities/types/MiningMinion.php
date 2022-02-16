@@ -19,10 +19,11 @@ use pocketmine\network\mcpe\protocol\types\LevelEvent;
 use pocketmine\world\particle\BlockBreakParticle;
 use pocketmine\world\particle\BlockPunchParticle;
 use pocketmine\world\Position;
+use pocketmine\world\sound\BlockBreakSound;
+use pocketmine\world\sound\BlockPlaceSound;
 use pocketmine\world\sound\BlockPunchSound;
 
 class MiningMinion extends BaseMinion{
-    protected bool $isMining = false;
 	/** @var ?Block $target */
     protected mixed $target = null;
 
@@ -55,7 +56,7 @@ class MiningMinion extends BaseMinion{
 	protected function containInvalidBlock() : bool{
 		/** @var Block $target */
 		foreach($this->getWorkingTargets() as $target){
-			if(!$target->isSameType($this->getMinionInformation()->getTarget()) or !$target->asItem()->isNull()){
+			if(!$target->isSameType($this->minionInformation->getTarget()) or !$target->asItem()->isNull()){
 				return true;
 			}
 		}
@@ -63,16 +64,17 @@ class MiningMinion extends BaseMinion{
 	}
 
     protected function place(Position $pos) : void{
+		$world = $pos->getWorld();
         $this->lookAt($pos);
-        $block = $this->getMinionInformation()->getTarget();
+        $block = $this->minionInformation->getTarget();
         $this->getInventory()->setItemInHand($block->asItem());
         $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
-        $pos->getWorld()->setBlock($pos, $block);
+		$world->setBlock($pos, $block);
+		$world->addSound($pos, new BlockPlaceSound($block));
     }
 
     protected function startMine(Block $block) : void{
         $this->getInventory()->setItemInHand($this->getTool());
-        $this->isMining = true;
         $this->target = $block;
         $breakTime = $block->getBreakInfo()->getBreakTime($this->getTool());
         $breakSpeed = $breakTime * 20; // 20 ticks = 1 sec
@@ -83,13 +85,13 @@ class MiningMinion extends BaseMinion{
             return;
         }
         if($breakSpeed > 0){
-            $breakSpeed = (int) (1 / $breakSpeed);
+            $breakSpeed = 1 / $breakSpeed;
         }else{
             $breakSpeed = 1;
         }
         $pos = $block->getPosition();
         $this->lookAt($block->getPosition());
-        $pos->getWorld()->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, 65535 * $breakSpeed, $pos));
+        $pos->getWorld()->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (int) (65535 * $breakSpeed), $pos));
     }
 
 	protected function mine() : void{
@@ -98,14 +100,17 @@ class MiningMinion extends BaseMinion{
 			return;
 		}
 		$pos = $block->getPosition();
+		$world = $pos->getWorld();
 		$event = new MinionWorkEvent($this, $block->getPosition());
 		$event->call();
 		if($event->isCancelled()){
 			return;
 		}
 		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
-		$this->getWorld()->addParticle($pos, new BlockPunchParticle($block, Facing::opposite($this->getHorizontalFacing())));
+		$world->addParticle($pos, new BlockPunchParticle($block, Facing::opposite($this->getHorizontalFacing())));
 		$this->broadcastSound(new BlockPunchSound($block), $this->getViewers());
+		$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
+		$world->addSound($pos, new BlockBreakSound($block));
 	}
 
 	protected function onAction() : void{
@@ -151,7 +156,7 @@ class MiningMinion extends BaseMinion{
 			return;
 		}
 		$remainTick = $this->tickWork - $tickDiff;
-		$maxTick = BaseMinion::MAX_TICKDIFF * -1;
+		$maxTick = -BaseMinion::MAX_TICKDIFF;
 		if($remainTick > 0){
 			$this->tickWork -= $tickDiff;
 			$this->mine();
@@ -159,14 +164,18 @@ class MiningMinion extends BaseMinion{
 		}
 		if($remainTick > $maxTick){
 			$this->tickWork = 0;
+			if($this->target === null){
+				return;
+			}
 			$block = clone $this->target;
 			$this->target = null;
 			if(!$block instanceof Block){
 				return;
 			}
 			$pos = $block->getPosition();
-			$pos->getWorld()->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
-			$pos->getWorld()->setBlock($pos, VanillaBlocks::AIR());
+			$world = $pos->getWorld();
+			$world->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
+			$world->setBlock($pos, VanillaBlocks::AIR());
 			$this->addDrops();
 			return;
 		}
@@ -179,7 +188,7 @@ class MiningMinion extends BaseMinion{
 	}
 
 	public function getTool() : Item{
-		return match($this->getMinionInformation()->getTarget()->getBreakInfo()->getToolType()){
+		return match($this->minionInformation->getTarget()->getBreakInfo()->getToolType()){
 			BlockToolType::AXE => VanillaItems::IRON_AXE(),
 			BlockToolType::PICKAXE => VanillaItems::IRON_PICKAXE(),
 			BlockToolType::SHOVEL => VanillaItems::IRON_SHOVEL(),
