@@ -49,6 +49,8 @@ abstract class BaseMinion extends Human{
 		$this->minionInventory->setSize($this->minionInformation->getLevel());
 		$this->getInventory()->setItemInHand($this->getTool());
 		$this->setScale(Configuration::getInstance()->minion_scale());
+        $this->setNameTagVisible();
+        $this->setNameTagAlwaysVisible();
 	}
 
 	public function saveNBT() : CompoundTag{
@@ -124,7 +126,7 @@ abstract class BaseMinion extends Human{
 	}
 
 	public function getActionTime() : int{
-		return 20; // TODO: Time based on level
+		return 100; // TODO: Time based on level
 	}
 
 	/**

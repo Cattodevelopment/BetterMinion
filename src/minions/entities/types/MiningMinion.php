@@ -58,7 +58,7 @@ class MiningMinion extends BaseMinion{
 	protected function containInvalidBlock() : bool{
 		/** @var Block $target */
 		foreach($this->getWorkingTargets() as $target){
-			if(!$target->isSameType($this->minionInformation->getTarget()) or !$target->asItem()->isNull()){
+			if(!$target->isSameType($this->minionInformation->getTarget()) and !$target->asItem()->isNull()){
 				return true;
 			}
 		}
@@ -153,6 +153,7 @@ class MiningMinion extends BaseMinion{
 	}
 
 	protected function minionAnimationTick(int $tickDiff = 1) : void{
+        // TODO: Mining speed bug
 		$target = $this->target;
 		if($target === null){
 			return;
