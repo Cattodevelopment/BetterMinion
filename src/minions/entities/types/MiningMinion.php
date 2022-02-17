@@ -22,14 +22,16 @@ use pocketmine\world\Position;
 use pocketmine\world\sound\BlockBreakSound;
 use pocketmine\world\sound\BlockPlaceSound;
 use pocketmine\world\sound\BlockPunchSound;
+use function iterator_to_array;
+use function shuffle;
 
 class MiningMinion extends BaseMinion{
 	/** @var ?Block $target */
-    protected mixed $target = null;
+	protected mixed $target = null;
 
-    /**
-     * @return \Generator|Block[]
-     */
+	/**
+	 * @return \Generator|Block[]
+	 */
 	protected function getWorkingTargets() : \Generator{
 		$radius = $this->getWorkingRadius();
 		for($x = -$radius; $x <= $radius; ++$x){
@@ -63,36 +65,36 @@ class MiningMinion extends BaseMinion{
 		return false;
 	}
 
-    protected function place(Position $pos) : void{
+	protected function place(Position $pos) : void{
 		$world = $pos->getWorld();
-        $this->lookAt($pos);
-        $block = $this->minionInformation->getTarget();
-        $this->getInventory()->setItemInHand($block->asItem());
-        $this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
+		$this->lookAt($pos);
+		$block = $this->minionInformation->getTarget();
+		$this->getInventory()->setItemInHand($block->asItem());
+		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
 		$world->setBlock($pos, $block);
 		$world->addSound($pos, new BlockPlaceSound($block));
-    }
+	}
 
-    protected function startMine(Block $block) : void{
-        $this->getInventory()->setItemInHand($this->getTool());
-        $this->target = $block;
-        $breakTime = $block->getBreakInfo()->getBreakTime($this->getTool());
-        $breakSpeed = $breakTime * 20; // 20 ticks = 1 sec
-        $this->tickWork = (int) $breakSpeed;
-        if($this->tickWork > $this->getActionTime()) { //When mining time > action time will cause spaming breaking block ...
-            $this->stopWorking();
-            $this->setNameTag("Block break time is too long :(");
-            return;
-        }
-        if($breakSpeed > 0){
-            $breakSpeed = 1 / $breakSpeed;
-        }else{
-            $breakSpeed = 1;
-        }
-        $pos = $block->getPosition();
-        $this->lookAt($block->getPosition());
-        $pos->getWorld()->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (int) (65535 * $breakSpeed), $pos));
-    }
+	protected function startMine(Block $block) : void{
+		$this->getInventory()->setItemInHand($this->getTool());
+		$this->target = $block;
+		$breakTime = $block->getBreakInfo()->getBreakTime($this->getTool());
+		$breakSpeed = $breakTime * 20; // 20 ticks = 1 sec
+		$this->tickWork = (int) $breakSpeed;
+		if($this->tickWork > $this->getActionTime()) { //When mining time > action time will cause spaming breaking block ...
+			$this->stopWorking();
+			$this->setNameTag("Block break time is too long :(");
+			return;
+		}
+		if($breakSpeed > 0){
+			$breakSpeed = 1 / $breakSpeed;
+		}else{
+			$breakSpeed = 1;
+		}
+		$pos = $block->getPosition();
+		$this->lookAt($block->getPosition());
+		$pos->getWorld()->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_START_BREAK, (int) (65535 * $breakSpeed), $pos));
+	}
 
 	protected function mine() : void{
 		$block = $this->target;
