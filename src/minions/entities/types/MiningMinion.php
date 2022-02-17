@@ -191,10 +191,10 @@ class MiningMinion extends BaseMinion{
 
 	public function getTool() : Item{
 		return match($this->minionInformation->getTarget()->getBreakInfo()->getToolType()){
-			BlockToolType::AXE => VanillaItems::IRON_AXE(),
-			BlockToolType::PICKAXE => VanillaItems::IRON_PICKAXE(),
-			BlockToolType::SHOVEL => VanillaItems::IRON_SHOVEL(),
-			BlockToolType::HOE => VanillaItems::IRON_HOE(),
+			BlockToolType::AXE => VanillaItems::DIAMOND_AXE(),
+			BlockToolType::PICKAXE => VanillaItems::DIAMOND_PICKAXE(),
+			BlockToolType::SHOVEL => VanillaItems::DIAMOND_SHOVEL(),
+			BlockToolType::HOE => VanillaItems::DIAMOND_HOE(),
 			BlockToolType::SHEARS => VanillaItems::SHEARS(),
 			default => parent::getTool()
 		};
