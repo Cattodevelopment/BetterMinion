@@ -49,8 +49,8 @@ abstract class BaseMinion extends Human{
 		$this->minionInventory->setSize($this->minionInformation->getLevel());
 		$this->getInventory()->setItemInHand($this->getTool());
 		$this->setScale(Configuration::getInstance()->minion_scale());
-        $this->setNameTagVisible();
-        $this->setNameTagAlwaysVisible();
+		$this->setNameTagVisible();
+		$this->setNameTagAlwaysVisible();
 	}
 
 	public function saveNBT() : CompoundTag{
