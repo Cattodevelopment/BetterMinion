@@ -111,8 +111,6 @@ class MiningMinion extends BaseMinion{
 		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
 		$world->addParticle($pos, new BlockPunchParticle($block, Facing::opposite($this->getHorizontalFacing())));
 		$this->broadcastSound(new BlockPunchSound($block), $this->getViewers());
-		$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
-		$world->addSound($pos, new BlockBreakSound($block));
 	}
 
 	protected function onAction() : void{
@@ -179,6 +177,8 @@ class MiningMinion extends BaseMinion{
 			$world = $pos->getWorld();
 			$world->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
 			$world->setBlock($pos, VanillaBlocks::AIR());
+			$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
+			$world->addSound($pos, new BlockBreakSound($block));
 			$this->addDrops();
 			return;
 		}
