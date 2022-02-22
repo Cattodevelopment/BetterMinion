@@ -52,7 +52,6 @@ class MiningMinion extends BaseMinion{
 			}
 		}
 		return null;
-
 	}
 
 	protected function containInvalidBlock() : bool{
@@ -151,7 +150,6 @@ class MiningMinion extends BaseMinion{
 	}
 
 	protected function minionAnimationTick(int $tickDiff = 1) : void{
-		// TODO: Mining speed bug
 		$target = $this->target;
 		if($target === null){
 			return;
