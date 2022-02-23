@@ -62,7 +62,7 @@ abstract class BaseMinion extends Human{
 	}
 
 	public function onUpdate(int $currentTick) : bool{
-		if($this->isWorking()){
+		if($this->isWorking){
 			if($this->minionInventory->isFull()){
 				$this->stopWorking();
 				$this->setNameTag("My inventory is full :<");
@@ -71,7 +71,6 @@ abstract class BaseMinion extends Human{
 		}else{
 			$this->continueWorking();
 		}
-		$this->setNameTag();
 		return parent::onUpdate($currentTick);
 	}
 
@@ -111,10 +110,17 @@ abstract class BaseMinion extends Human{
 
 	public function stopWorking() : void{
 		$this->isWorking = false;
+		$this->clearTarget();
 	}
 
 	public function continueWorking() : void{
 		$this->isWorking = true;
+		$this->setNameTag();
+	}
+
+	public function clearTarget() : void{
+		$this->tickWork = 0;
+		$this->target = null;
 	}
 
 	/**

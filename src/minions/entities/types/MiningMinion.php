@@ -64,10 +64,9 @@ class MiningMinion extends BaseMinion{
 		return false;
 	}
 
-	protected function place(Position $pos) : void{
+	protected function place(Position $pos, Block $block) : void{
 		$world = $pos->getWorld();
 		$this->lookAt($pos);
-		$block = $this->minionInformation->getTarget();
 		$this->getInventory()->setItemInHand($block->asItem());
 		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
 		$world->setBlock($pos, $block);
@@ -112,11 +111,30 @@ class MiningMinion extends BaseMinion{
 		$this->broadcastSound(new BlockPunchSound($block), $this->getViewers());
 	}
 
+	protected function break() : void{
+		if($this->target === null){
+			return;
+		}
+		$block = clone $this->target;
+		$this->target = null;
+		if(!$block instanceof Block){
+			return;
+		}
+		$pos = $block->getPosition();
+		$world = $pos->getWorld();
+		$world->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
+		$world->setBlock($pos, VanillaBlocks::AIR());
+		$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
+		$world->addSound($pos, new BlockBreakSound($block));
+		$this->addDrops();
+	}
+
 	protected function onAction() : void{
 		if($this->containInvalidBlock()){
 			$this->setNameTag("This place is not perfect :(");
 			return;
 		}
+		$this->setNameTag();
 		$air = $this->getAirPosition();
 		if($air !== null){
 			$event = new MinionWorkEvent($this, $air);
@@ -124,7 +142,7 @@ class MiningMinion extends BaseMinion{
 			if($event->isCancelled()){
 				return;
 			}
-			$this->place($air);
+			$this->place($air, $this->minionInformation->getTarget());
 			return;
 		}
 		if($this->target === null){
@@ -151,7 +169,8 @@ class MiningMinion extends BaseMinion{
 
 	protected function minionAnimationTick(int $tickDiff = 1) : void{
 		$target = $this->target;
-		if($target === null){
+		if($target === null or $target->asItem()->isNull()){
+			$this->clearTarget();
 			return;
 		}
 		$remainTick = $this->tickWork - $tickDiff;
@@ -162,28 +181,13 @@ class MiningMinion extends BaseMinion{
 			return;
 		}
 		if($remainTick > $maxTick){
-			$this->tickWork = 0;
-			if($this->target === null){
-				return;
-			}
-			$block = clone $this->target;
-			$this->target = null;
-			if(!$block instanceof Block){
-				return;
-			}
-			$pos = $block->getPosition();
-			$world = $pos->getWorld();
-			$world->addParticle($pos->add(0.5, 0.5, 0.5), new BlockBreakParticle($block));
-			$world->setBlock($pos, VanillaBlocks::AIR());
-			$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
-			$world->addSound($pos, new BlockBreakSound($block));
-			$this->addDrops();
+			$this->break();
+			$this->clearTarget();
 			return;
 		}
 		if($remainTick < $maxTick){
-			$this->tickWork = 0;
+			$this->clearTarget();
 			// TODO: Hacks... Skip and just add stuff like offline action
-			$this->target = null;
 			$this->doOfflineAction(1);
 		}
 	}
