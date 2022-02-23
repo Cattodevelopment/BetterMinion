@@ -18,7 +18,6 @@ use function ucfirst;
  * @generate-registry-docblock
  *
  * @method static MinionType MINING()
- * @method static MinionType FARMING()
  */
 
 class MinionType implements MinionNBT{
@@ -26,8 +25,7 @@ class MinionType implements MinionNBT{
 
 	protected static function setup() : void{
 		self::registerAll(
-			new self("mining"),
-			new self("farming")
+			new self("mining")
 		);
 	}
 
