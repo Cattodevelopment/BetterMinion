@@ -70,6 +70,7 @@ abstract class BaseMinion extends Human{
 			}
 		}else{
 			$this->continueWorking();
+			return true;
 		}
 		return parent::onUpdate($currentTick);
 	}
@@ -158,6 +159,7 @@ abstract class BaseMinion extends Human{
 		$addable = $player->getInventory()->getAddableItemQuantity($item);
 		$player->getInventory()->addItem((clone $item)->setCount($addable));
 		$this->minionInventory->setItem($slot, $item->setCount($item->getCount() - $addable));
+		$this->minionInventory->reorder();
 		return $item->isNull();
 	}
 
