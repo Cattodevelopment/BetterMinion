@@ -1,0 +1,11 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/mcbeany-pm-pl/BetterMinion
+build-by-default: true
+branches:
+- master
+projects:
+  BetterMinion:
+    path: ""
+    libs:
+      - src: CortexPE/Commando/Commando
+        version: ^3.0.0
+...
