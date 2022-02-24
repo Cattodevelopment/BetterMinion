@@ -2,18 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\events\player;
+namespace Mcbeany\BetterMinion\events\minions;
 
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
-use pocketmine\event\player\PlayerEvent;
-use pocketmine\player\Player;
+use pocketmine\event\Event;
 
-abstract class PlayerMinionEvent extends PlayerEvent{
+abstract class MinionEvent extends Event{
 	public function __construct(
-		Player $player,
 		protected BaseMinion $minion
 	) {
-		$this->player = $player;
 	}
 
 	public function getMinion() : BaseMinion{

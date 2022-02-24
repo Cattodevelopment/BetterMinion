@@ -8,45 +8,27 @@ use pocketmine\item\Item;
 use pocketmine\item\LegacyStringToItemParser;
 use pocketmine\item\LegacyStringToItemParserException;
 use pocketmine\item\StringToItemParser;
+use pocketmine\player\Player;
 
 final class Utils{
-
-	/**
-	 * @throws LegacyStringToItemParserException
-	 */
-	public static function parseItem(string $item) : Item{
-		return StringToItemParser::getInstance()->parse($item)
-			?? LegacyStringToItemParser::getInstance()->parse($item);
-	}
-
-	public static function getRomanNumeral(int $integer) : string{
-		$romanNumeralConversionTable = [
-			'M' => 1000,
-			'CM' => 900,
-			'D' => 500,
-			'CD' => 400,
-			'C' => 100,
-			'XC' => 90,
-			'L' => 50,
-			'XL' => 40,
-			'X' => 10,
-			'IX' => 9,
-			'V' => 5,
-			'IV' => 4,
-			'I' => 1,
-		];
-		$romanString = '';
-		while($integer > 0){
-			foreach($romanNumeralConversionTable as $rom => $arb){
-				if($integer >= $arb){
-					$integer -= $arb;
-					$romanString .= $rom;
-
-					break;
-				}
-			}
+	public static function parseItem(string $input) : ?Item{
+		/** @var StringToItemParser $parser */
+		$parser = StringToItemParser::getInstance();
+		/** @var LegacyStringToItemParser $legacyParser */
+		$legacyParser = LegacyStringToItemParser::getInstance();
+		try {
+			return $parser->parse($input) ?? $legacyParser->parse($input);
+		} catch (LegacyStringToItemParserException) {
+			return null;
 		}
-		return $romanString;
 	}
 
+	public static function giveItem(Player $player, Item $item) : bool{
+		if($player->getInventory()->canAddItem($item)){
+			$player->getInventory()->addItem($item);
+			return true;
+		}
+		$player->dropItem($item);
+		return false;
+	}
 }

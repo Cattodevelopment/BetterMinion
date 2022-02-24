@@ -4,54 +4,58 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\utils;
 
-use Mcbeany\BetterMinion\BetterMinion;
 use pocketmine\item\Item;
-use pocketmine\lang\Language;
-use function gettype;
-use function is_object;
+use pocketmine\utils\Config;
+use function is_float;
+use function is_string;
 
-final class Configuration{
+class Configuration{
+	use SingletonTrait;
 
-	public static function load(){
-		BetterMinion::getInstance()->saveDefaultConfig();
-		BetterMinion::getInstance()->getConfig()->setDefaults(self::default());
+	protected function onInit() : void{
+		$this->getPlugin()->saveDefaultConfig();
+		$this->getConfig()->setDefaults($this->defaults());
 	}
 
-	private static function default() : array{
+	final public function minion_spawner() : Item{
+		$name = $this->get("spawner");
+		$item = Utils::parseItem(is_string($name) ? $name : "");
+		if($item === null){
+			$this->setDefault("spawner");
+			return $this->minion_spawner();
+		}
+		return $item;
+	}
+
+	final public function minion_scale() : float{
+		$scale = $this->get("scale");
+		if(!is_float($scale)){
+			$this->setDefault("scale");
+			return $this->minion_scale();
+		}
+		return $scale;
+	}
+
+	public function getConfig() : Config{
+		return $this->getPlugin()->getConfig();
+	}
+
+	public function get(string $key) : mixed{
+		return $this->getConfig()->get($key, null);
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	public function defaults() : array{
 		return [
-			"language" => Language::FALLBACK_LANGUAGE,
-			"minion-spawner" => "nether_star",
-			"minion-size" => 0.5,
-			"economy-provider" => "bedrockeconomy"
+			"spawner" => "nether_star",
+			"scale" => 0.5
 		];
 	}
 
-	public static function language() : string{
-		return self::get("language");
+	public function setDefault(string $key) : void{
+		$this->getConfig()->set($key, $this->defaults()[$key]);
+		$this->getConfig()->save();
 	}
-
-	public static function minion_spawner() : Item{
-		return Utils::parseItem(self::get("minion-spawner"));
-	}
-
-	public static function minion_size() : float{
-		return self::get("minion-size");
-	}
-
-	public static function economy_provider() : string{
-		return self::get("economy-provider");
-	}
-
-	protected static function get(string $key) : mixed{
-		$set = BetterMinion::getInstance()->getConfig()->get($key);
-		$default = self::default()[$key];
-		$compare = "is_" . (is_object($default) ? "object" : gettype($default));
-		if(!$compare($set)){
-			// TODO: Warn server's owner that the configuration has an incorrect data type
-			BetterMinion::getInstance()->getConfig()->set($key, $default);
-			BetterMinion::getInstance()->getConfig()->save();
-		}
-		return $set;
-	}
-
 }
