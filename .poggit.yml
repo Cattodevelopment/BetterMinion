@@ -5,7 +5,4 @@ branches:
 projects:
   BetterMinion:
     path: ""
-    libs:
-      - src: CortexPE/Commando/Commando
-        version: ^3.0.0
 ...
