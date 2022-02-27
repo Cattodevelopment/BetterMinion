@@ -37,11 +37,11 @@ final class MinionFactory{
 		$this->register(MiningMinion::class, MinionType::MINING());
 	}
 
-	public function getSpawner(MinionType $type, Block $target) : Item{
+	public function getSpawner(MinionType $type, Block $target, int $level = 1, ?MinionUpgrade $upgrade = null) : Item{
 		$item = Configuration::getInstance()->minion_spawner();
 		$item->setNamedTag($item->getNamedTag()->setTag(
 			MinionNBT::INFORMATION,
-			(new MinionInformation($type, $target, new MinionUpgrade()))->serializeTag()
+			(new MinionInformation($type, $target, $level, $upgrade ?? new MinionUpgrade))->serializeTag()
 		));
 		return $item;
 	}

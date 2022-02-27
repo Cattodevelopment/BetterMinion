@@ -4,9 +4,7 @@ DEV = dev
 VENDOR = vendor
 BIN = $(VENDOR)/bin
 
-default: dev/composer.phar vendor analyse
-
-dev/composer.phar: Makefile 
+composer: Makefile
 	cd $(DEV) && wget -O - https://getcomposer.org/installer | $(PHP)
 
 vendor: Makefile
@@ -16,4 +14,4 @@ fmt: Makefile
 	$(PHP) $(BIN)/php-cs-fixer fix src
 
 analyse: Makefile
-	$(PHP) $(BIN)/phpstan analyse -c phpstan.neon.dist
+	$(PHP) $(BIN)/phpstan analyse

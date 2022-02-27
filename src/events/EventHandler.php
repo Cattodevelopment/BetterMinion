@@ -8,9 +8,11 @@ use Mcbeany\BetterMinion\events\player\PlayerInteractMinionEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionNBT;
+use Mcbeany\BetterMinion\minions\menus\inventories\MainMinionMenu;
 use Mcbeany\BetterMinion\minions\MinionFactory;
 use Mcbeany\BetterMinion\sessions\SessionManager;
 use Mcbeany\BetterMinion\utils\Configuration;
+use Mcbeany\BetterMinion\utils\SingletonTrait;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerEntityInteractEvent;
@@ -21,6 +23,13 @@ use pocketmine\item\Item;
 use pocketmine\player\Player;
 
 final class EventHandler implements Listener{
+	use SingletonTrait;
+
+	protected function onInit() : void{
+		$plugin = $this->getOwningPlugin();
+		$plugin->getServer()->getPluginManager()->registerEvents($this, $plugin);
+	}
+
 	public function handleJoin(PlayerJoinEvent $event) : void{
 		SessionManager::getInstance()->createSession($event->getPlayer());
 	}
@@ -83,6 +92,6 @@ final class EventHandler implements Listener{
 		if($event->isCancelled()){
 			return;
 		}
-		// TODO: Open menu
+		(new MainMinionMenu($minion, $player))->sendToPlayer();
 	}
 }

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Mcbeany\BetterMinion\minions\entities;
 
 use Mcbeany\BetterMinion\events\minions\MinionCollectResourceEvent;
+use Mcbeany\BetterMinion\events\player\PlayerTakeMinionEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionInventory;
 use Mcbeany\BetterMinion\minions\informations\MinionNBT;
+use Mcbeany\BetterMinion\minions\MinionFactory;
 use Mcbeany\BetterMinion\utils\Configuration;
+use Mcbeany\BetterMinion\utils\Utils;
 use pocketmine\block\Block;
 use pocketmine\entity\Human;
 use pocketmine\item\Item;
@@ -161,6 +164,21 @@ abstract class BaseMinion extends Human{
 		$this->minionInventory->setItem($slot, $item->setCount($item->getCount() - $addable));
 		$this->minionInventory->reorder();
 		return $item->isNull();
+	}
+
+	public function takeMinion(Player $player) : void{
+		(new PlayerTakeMinionEvent($player, $this))->call();
+		$info = $this->minionInformation;
+		Utils::giveItem($player, MinionFactory::getInstance()->getSpawner(
+			$info->getType(),
+			$info->getTarget(),
+			$info->getLevel(),
+			$info->getUpgrade()
+		));
+		foreach($this->minionInventory->getContents() as $item){
+			Utils::giveItem($player, $item);
+		}
+		$this->flagForDespawn();
 	}
 
 	protected function onAction() : void{

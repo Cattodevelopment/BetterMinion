@@ -6,14 +6,13 @@ namespace Mcbeany\BetterMinion\utils;
 
 use pocketmine\item\Item;
 use pocketmine\utils\Config;
-use function is_float;
 use function is_string;
 
 class Configuration{
 	use SingletonTrait;
 
 	protected function onInit() : void{
-		$this->getPlugin()->saveDefaultConfig();
+		$this->getOwningPlugin()->saveDefaultConfig();
 		$this->getConfig()->setDefaults($this->defaults());
 	}
 
@@ -28,20 +27,23 @@ class Configuration{
 	}
 
 	final public function minion_scale() : float{
+		/** @var float $scale */
 		$scale = $this->get("scale");
-		if(!is_float($scale)){
-			$this->setDefault("scale");
-			return $this->minion_scale();
-		}
 		return $scale;
 	}
 
 	public function getConfig() : Config{
-		return $this->getPlugin()->getConfig();
+		return $this->getOwningPlugin()->getConfig();
 	}
 
 	public function get(string $key) : mixed{
-		return $this->getConfig()->get($key, null);
+		$default = $this->defaults()[$key];
+		$set = $this->getConfig()->get($key, null);
+		if(gettype($default) !== gettype($set)){
+			$this->setDefault($key);
+			return $default;
+		}
+		return $set;
 	}
 
 	/**
@@ -54,6 +56,9 @@ class Configuration{
 		];
 	}
 
+	/**
+	 * @throws \JsonException
+	 */
 	public function setDefault(string $key) : void{
 		$this->getConfig()->set($key, $this->defaults()[$key]);
 		$this->getConfig()->save();

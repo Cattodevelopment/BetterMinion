@@ -17,8 +17,8 @@ class MinionInformation implements MinionNBT{
 	public function __construct(
 		private MinionType $type,
 		private Block $target,
-		private MinionUpgrade $upgrade,
-		private int $level = self::MIN_LEVEL
+		private int $level,
+		private MinionUpgrade $upgrade
 		// TODO
 	) {
 	}
@@ -31,16 +31,16 @@ class MinionInformation implements MinionNBT{
 		return $this->target;
 	}
 
-	public function getUpgrade() : MinionUpgrade{
-		return $this->upgrade;
-	}
-
 	public function getLevel() : int{
 		return $this->level;
 	}
 
 	public function increaseLevel() : void{
 		$this->level++;
+	}
+
+	public function getUpgrade() : MinionUpgrade{
+		return $this->upgrade;
 	}
 
 	protected function targetSerialize() : CompoundTag{
@@ -63,8 +63,8 @@ class MinionInformation implements MinionNBT{
 		return CompoundTag::create()
 			->setTag(MinionNBT::TYPE, $this->type->serializeTag())
 			->setTag(MinionNBT::TARGET, $this->targetSerialize())
-			->setTag(MinionNBT::UPGRADE, $this->upgrade->serializeTag())
-			->setInt(MinionNBT::LEVEL, $this->level);
+			->setInt(MinionNBT::LEVEL, $this->level)
+			->setTag(MinionNBT::UPGRADE, $this->upgrade->serializeTag());
 	}
 
 	/**
@@ -89,8 +89,8 @@ class MinionInformation implements MinionNBT{
 		return new self(
 			MinionType::deserializeTag($type),
 			self::targetDeserialize($target),
-			MinionUpgrade::deserializeTag($upgrade),
-			$tag->getInt(MinionNBT::LEVEL)
+			$tag->getInt(MinionNBT::LEVEL),
+			MinionUpgrade::deserializeTag($upgrade)
 		);
 	}
 }
