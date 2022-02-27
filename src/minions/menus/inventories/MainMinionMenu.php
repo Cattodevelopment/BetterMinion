@@ -8,6 +8,7 @@ use Mcbeany\BetterMinion\events\minions\MinionCollectResourceEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\menus\BaseInvMenu;
 use muqsit\invmenu\InvMenu;
+use muqsit\invmenu\type\InvMenuTypeIds;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use pocketmine\block\utils\DyeColor;
 use pocketmine\block\VanillaBlocks;
@@ -18,6 +19,8 @@ use function floor;
 use function range;
 
 class MainMinionMenu extends BaseInvMenu{
+	public const INV_TYPE = InvMenuTypeIds::TYPE_DOUBLE_CHEST;
+
 	/** @var int[] $invSlots */
 	private array $invSlots = [];
 
