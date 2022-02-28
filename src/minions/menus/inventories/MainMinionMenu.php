@@ -30,7 +30,6 @@ class MainMinionMenu extends BaseInvMenu{
 			range(0, MinionInformation::MAX_LEVEL)
 		);
 		$this->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) : void{
-			$this->render();
 			$player = $this->getPlayer();
 			$minion = $this->getMinion();
 			$slot = $transaction->getAction()->getSlot();
@@ -53,6 +52,7 @@ class MainMinionMenu extends BaseInvMenu{
 					}
 					break;
 			}
+			$this->render();
 		}));
 		parent::sendToPlayer();
 	}
