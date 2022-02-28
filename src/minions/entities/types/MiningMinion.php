@@ -134,7 +134,7 @@ class MiningMinion extends BaseMinion{
 		$this->setNameTag();
 		$air = $this->getAirPosition();
 		if($air !== null){
-			$event = new MinionStartWork($this, $air);
+			$event = new MinionStartWorkEvent($this, $air);
 			$event->call();
 			if($event->isCancelled()){
 				return;
