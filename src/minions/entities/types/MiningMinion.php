@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\entities\types;
 
-use Mcbeany\BetterMinion\events\minions\MinionStartWorkEvent;
 use Mcbeany\BetterMinion\events\minions\MinionFinishWorkEvent;
+use Mcbeany\BetterMinion\events\minions\MinionStartWorkEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
 use pocketmine\block\Block;
 use pocketmine\block\BlockToolType;

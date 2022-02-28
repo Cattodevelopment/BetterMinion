@@ -6,6 +6,7 @@ namespace Mcbeany\BetterMinion\utils;
 
 use pocketmine\item\Item;
 use pocketmine\utils\Config;
+use function gettype;
 use function is_string;
 
 class Configuration{
