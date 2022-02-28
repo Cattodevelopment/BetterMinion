@@ -46,7 +46,9 @@ class MainMinionMenu extends BaseInvMenu{
 					break;
 				default:
 					if(($clickedSlot = array_search($slot, $this->invSlots, true)) !== false){
-						$minion->takeStuff($clickedSlot, $player);
+						if($minion->getMinionInventory()->slotExists($clickedSlot)){
+							$minion->takeStuff($clickedSlot, $player);
+						}
 					}
 			}
 			$this->render();
