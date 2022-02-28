@@ -71,6 +71,7 @@ class MiningMinion extends BaseMinion{
 		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
 		$world->setBlock($pos, $block);
 		$world->addSound($pos, new BlockPlaceSound($block));
+		(new MinionFinishWorkEvent($this))->call();
 	}
 
 	protected function startMine(Block $block) : void{
@@ -133,7 +134,7 @@ class MiningMinion extends BaseMinion{
 		$this->setNameTag();
 		$air = $this->getAirPosition();
 		if($air !== null){
-			$event = new MinionWorkEvent($this, $air);
+			$event = new MinionStartWork($this, $air);
 			$event->call();
 			if($event->isCancelled()){
 				return;
