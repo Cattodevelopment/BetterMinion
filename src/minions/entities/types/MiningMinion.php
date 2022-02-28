@@ -166,7 +166,7 @@ class MiningMinion extends BaseMinion{
 
 	protected function minionAnimationTick(int $tickDiff = 1) : void{
 		$target = $this->target;
-		if($target === null or $target->asItem()->isNull()){
+		if(!$target instanceof Block or $target->asItem()->isNull()){
 			$this->clearTarget();
 			return;
 		}
