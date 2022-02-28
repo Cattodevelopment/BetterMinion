@@ -22,7 +22,10 @@ class MinionCollectResourcesEvent extends MinionEvent implements Cancellable{
 		parent::__construct($minion);
 	}
 
-	public function getDrops() : Item{
+	/**
+	 * @return Item[]
+	 */
+	public function getDrops() : array{
 		return $this->drops;
 	}
 
