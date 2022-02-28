@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\menus\inventories;
 
-use Mcbeany\BetterMinion\events\minions\MinionCollectResourcesEvent;
+use Mcbeany\BetterMinion\events\minions\MinionFinishWorkEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\menus\BaseInvMenu;
 use muqsit\invmenu\InvMenu;
@@ -57,11 +57,7 @@ class MainMinionMenu extends BaseInvMenu{
 		parent::sendToPlayer();
 	}
 
-	/**
-	 * @priority HIGHEST
-	 * @handleCancelled FALSE
-	 */
-	public function handleCollectResource(MinionCollectResourcesEvent $event) : void{
+	public function handleFinishWork(MinionFinishWorkEvent $event) : void{
 		$this->render();
 	}
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mcbeany\BetterMinion\minions\entities\types;
 
 use Mcbeany\BetterMinion\events\minions\MinionStartWorkEvent;
-use Mcbeany\BetterMinion\events\minions\MinionWorkEvent;
+use Mcbeany\BetterMinion\events\minions\MinionFinishWorkEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
 use pocketmine\block\Block;
 use pocketmine\block\BlockToolType;
@@ -101,11 +101,6 @@ class MiningMinion extends BaseMinion{
 		}
 		$pos = $block->getPosition();
 		$world = $pos->getWorld();
-		$event = new MinionWorkEvent($this, $block->getPosition());
-		$event->call();
-		if($event->isCancelled()){
-			return;
-		}
 		$this->broadcastAnimation(new ArmSwingAnimation($this), $this->getViewers());
 		$world->addParticle($pos, new BlockPunchParticle($block, Facing::opposite($this->getHorizontalFacing())));
 		$this->broadcastSound(new BlockPunchSound($block), $this->getViewers());
@@ -127,6 +122,7 @@ class MiningMinion extends BaseMinion{
 		$world->broadcastPacketToViewers($pos, LevelEventPacket::create(LevelEvent::BLOCK_STOP_BREAK, 0, $pos));
 		$world->addSound($pos, new BlockBreakSound($block));
 		$this->addDrops();
+		(new MinionFinishWorkEvent($this))->call();
 	}
 
 	protected function onAction() : void{

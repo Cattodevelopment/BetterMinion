@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions;
 
-use Mcbeany\BetterMinion\events\player\PlayerSpawnMinionEvent;
+use Mcbeany\BetterMinion\events\players\PlayerSpawnMinionEvent;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
 use Mcbeany\BetterMinion\minions\entities\types\MiningMinion;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;

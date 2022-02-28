@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mcbeany\BetterMinion\minions\entities;
 
 use Mcbeany\BetterMinion\events\minions\MinionCollectResourcesEvent;
-use Mcbeany\BetterMinion\events\player\PlayerTakeMinionEvent;
+use Mcbeany\BetterMinion\events\players\PlayerTakeMinionEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionInventory;
 use Mcbeany\BetterMinion\minions\informations\MinionNBT;
@@ -65,13 +65,14 @@ abstract class BaseMinion extends Human{
 	}
 
 	public function onUpdate(int $currentTick) : bool{
-		if($this->isWorking){
-			if($this->minionInventory->isFull()){
+		if($this->minionInventory->isFull()){
+			if($this->isWorking){
 				$this->stopWorking();
 				$this->setNameTag("My inventory is full :<");
 				return true;
 			}
-		}else{
+		}
+		if(!$this->isWorking){
 			$this->continueWorking();
 			return true;
 		}
