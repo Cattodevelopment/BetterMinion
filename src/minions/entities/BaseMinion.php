@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\entities;
 
-use Mcbeany\BetterMinion\events\minions\MinionCollectResourceEvent;
+use Mcbeany\BetterMinion\events\minions\MinionCollectResourcesEvent;
 use Mcbeany\BetterMinion\events\player\PlayerTakeMinionEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\informations\MinionInventory;
@@ -143,14 +143,12 @@ abstract class BaseMinion extends Human{
 	 * @param Item[] $drops
 	 */
 	protected function addStuff(array $drops) : void{
-		foreach($drops as $drop){
-			$event = new MinionCollectResourceEvent($this, $drop);
-			$event->call();
-			if($event->isCancelled()){
-				continue;
-			}
-			$this->minionInventory->addItem($drop);
+		$event = new MinionCollectResourcesEvent($this, $drops);
+		$event->call();
+		if($event->isCancelled()){
+			return;
 		}
+		$this->minionInventory->addItem(...$event->getDrops());
 	}
 
 	public function addDrops() : void{
@@ -176,7 +174,7 @@ abstract class BaseMinion extends Human{
 			$info->getUpgrade()
 		));
 		foreach($this->minionInventory->getContents() as $item){
-			Utils::giveItem($player, $item);
+			$this->getWorld()->dropItem($this->getPosition(), $item);
 		}
 		$this->flagForDespawn();
 	}

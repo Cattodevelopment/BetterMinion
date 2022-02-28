@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mcbeany\BetterMinion\minions\menus\inventories;
 
-use Mcbeany\BetterMinion\events\minions\MinionCollectResourceEvent;
+use Mcbeany\BetterMinion\events\minions\MinionCollectResourcesEvent;
 use Mcbeany\BetterMinion\minions\informations\MinionInformation;
 use Mcbeany\BetterMinion\minions\menus\BaseInvMenu;
 use muqsit\invmenu\InvMenu;
@@ -30,6 +30,7 @@ class MainMinionMenu extends BaseInvMenu{
 			range(0, MinionInformation::MAX_LEVEL)
 		);
 		$this->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) : void{
+			$this->render();
 			$player = $this->getPlayer();
 			$minion = $this->getMinion();
 			$slot = $transaction->getAction()->getSlot();
@@ -52,12 +53,15 @@ class MainMinionMenu extends BaseInvMenu{
 					}
 					break;
 			}
-			$this->render();
 		}));
 		parent::sendToPlayer();
 	}
 
-	public function handleCollectResource(MinionCollectResourceEvent $event) : void{
+	/**
+	 * @priority HIGHEST
+	 * @handleCancelled FALSE
+	 */
+	public function handleCollectResource(MinionCollectResourcesEvent $event) : void{
 		$this->render();
 	}
 
