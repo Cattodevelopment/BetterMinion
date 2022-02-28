@@ -50,6 +50,7 @@ class MainMinionMenu extends BaseInvMenu{
 							$minion->takeStuff($clickedSlot, $player);
 						}
 					}
+					break;
 			}
 			$this->render();
 		}));
