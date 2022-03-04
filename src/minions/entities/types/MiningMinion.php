@@ -26,7 +26,7 @@ use function iterator_to_array;
 use function shuffle;
 
 class MiningMinion extends BaseMinion{
-	/** @var ?Block $target */
+	/** @var Block|null $target */
 	protected mixed $target = null;
 
 	/**
