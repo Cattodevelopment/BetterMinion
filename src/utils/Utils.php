@@ -36,11 +36,10 @@ final class Utils{
 	}
 
 	public static function giveItem(Player $player, Item $item) : bool{
-		if($player->getInventory()->canAddItem($item)){
-			$player->getInventory()->addItem($item);
-			return true;
+		$rest = $player->getInventory()->addItem($item);
+		foreach($rest as $drop){
+			$player->dropItem($drop);
 		}
-		$player->dropItem($item);
-		return false;
+		return empty($rest);
 	}
 }
