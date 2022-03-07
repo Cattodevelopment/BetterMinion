@@ -29,11 +29,11 @@ interface MinionNBT{
 	/**
 	 * @return mixed
 	 */
-	public function serializeTag();
+	public function nbtSerialize();
 	/**
 	 * @deprecated
 	 *
 	 * @return mixed
 	 */
-	public static function deserializeTag(Tag $tag);
+	public static function nbtDeserialize(Tag $tag);
 }

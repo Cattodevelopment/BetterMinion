@@ -59,18 +59,18 @@ class MinionInformation implements MinionNBT{
 		);
 	}
 
-	public function serializeTag() : CompoundTag{
+	public function nbtSerialize() : CompoundTag{
 		return CompoundTag::create()
-			->setTag(MinionNBT::TYPE, $this->type->serializeTag())
+			->setTag(MinionNBT::TYPE, $this->type->nbtSerialize())
 			->setTag(MinionNBT::TARGET, $this->targetSerialize())
 			->setInt(MinionNBT::LEVEL, $this->level)
-			->setTag(MinionNBT::UPGRADE, $this->upgrade->serializeTag());
+			->setTag(MinionNBT::UPGRADE, $this->upgrade->nbtSerialize());
 	}
 
 	/**
 	 * @param CompoundTag $tag
 	 */
-	public static function deserializeTag(Tag $tag) : self{
+	public static function nbtDeserialize(Tag $tag) : self{
 		if(!$tag instanceof CompoundTag){
 			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . get_class($tag));
 		}
@@ -87,10 +87,10 @@ class MinionInformation implements MinionNBT{
 			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . ($upgrade === null ? "null" :get_class($upgrade)));
 		}
 		return new self(
-			MinionType::deserializeTag($type),
+			MinionType::nbtDeserialize($type),
 			self::targetDeserialize($target),
 			$tag->getInt(MinionNBT::LEVEL),
-			MinionUpgrade::deserializeTag($upgrade)
+			MinionUpgrade::nbtDeserialize($upgrade)
 		);
 	}
 }

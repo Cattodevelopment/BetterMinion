@@ -32,7 +32,7 @@ class MinionInventory extends SimpleInventory implements MinionNBT{
 		return !$lastItem->isNull() and $lastItem->getCount() == $lastItem->getMaxStackSize();
 	}
 
-	public function serializeTag() : ListTag{
+	public function nbtSerialize() : ListTag{
 		return new ListTag(
 			array_map(
 				fn (Item $item) => $item->nbtSerialize(),
@@ -45,7 +45,7 @@ class MinionInventory extends SimpleInventory implements MinionNBT{
 	/**
 	 * @param ListTag $tag
 	 */
-	public static function deserializeTag(Tag $tag) : self{
+	public static function nbtDeserialize(Tag $tag) : self{
 		if(!$tag instanceof ListTag){
 			throw new \InvalidArgumentException("Expected " . ListTag::class . ", got " . get_class($tag));
 		}

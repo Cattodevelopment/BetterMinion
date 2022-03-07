@@ -41,7 +41,7 @@ final class MinionFactory{
 		$item = Configuration::getInstance()->minion_spawner();
 		$item->setNamedTag($item->getNamedTag()->setTag(
 			MinionNBT::INFORMATION,
-			(new MinionInformation($type, $target, $level, $upgrade ?? new MinionUpgrade))->serializeTag()
+			(new MinionInformation($type, $target, $level, $upgrade ?? new MinionUpgrade))->nbtSerialize()
 		));
 		return $item;
 	}
@@ -54,7 +54,7 @@ final class MinionFactory{
 		$nbt = CompoundTag::create()
 			->setString(MinionNBT::OWNER, $player->getUniqueId()->toString())
 			->setString(MinionNBT::OWNER_NAME, $player->getName())
-			->setTag(MinionNBT::INFORMATION, $information->serializeTag());
+			->setTag(MinionNBT::INFORMATION, $information->nbtSerialize());
 		/** @var BaseMinion $entity */
 		$entity = new $class(Location::fromObject(
 			$player->getPosition()->floor()->add(0.5, 0, 0.5),

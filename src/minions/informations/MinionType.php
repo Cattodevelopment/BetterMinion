@@ -40,14 +40,14 @@ class MinionType implements MinionNBT{
 		return ucfirst($this->name());
 	}
 
-	public function serializeTag() : StringTag{
+	public function nbtSerialize() : StringTag{
 		return new StringTag($this->name());
 	}
 
 	/**
 	 * @param StringTag $tag
 	 */
-	public static function deserializeTag(Tag $tag) : self{
+	public static function nbtDeserialize(Tag $tag) : self{
 		if(!$tag instanceof StringTag){
 			throw new \InvalidArgumentException("Expected " . StringTag::class . ", got " . get_class($tag));
 		}

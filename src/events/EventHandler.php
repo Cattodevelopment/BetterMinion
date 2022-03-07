@@ -68,7 +68,7 @@ final class EventHandler implements Listener{
 		if($item->equals(Configuration::getInstance()->minion_spawner(), true, false)){
 			$nbt = $item->getNamedTag()->getCompoundTag(MinionNBT::INFORMATION);
 			if($nbt !== null){
-				if(MinionFactory::getInstance()->spawnMinion(MinionInformation::deserializeTag($nbt), $player)){
+				if(MinionFactory::getInstance()->spawnMinion(MinionInformation::nbtDeserialize($nbt), $player)){
 					$item->pop();
 					$player->getInventory()->setItemInHand($item);
 					return true;

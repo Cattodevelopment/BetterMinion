@@ -44,8 +44,8 @@ abstract class BaseMinion extends Human{
 			$this->flagForDespawn();
 			return;
 		}
-		$this->minionInformation = MinionInformation::deserializeTag($infoNBT);
-		$this->minionInventory = MinionInventory::deserializeTag(
+		$this->minionInformation = MinionInformation::nbtDeserialize($infoNBT);
+		$this->minionInventory = MinionInventory::nbtDeserialize(
 			$nbt->getListTag(MinionNBT::INVENTORY) ??
 			new ListTag([], NBT::TAG_Compound)
 		);
@@ -60,8 +60,8 @@ abstract class BaseMinion extends Human{
 		return parent::saveNBT()
 			->setString(MinionNBT::OWNER, $this->owner->toString())
 			->setString(MinionNBT::OWNER_NAME, $this->ownerName)
-			->setTag(MinionNBT::INFORMATION, $this->minionInformation->serializeTag())
-			->setTag(MinionNBT::INVENTORY, $this->minionInventory->serializeTag());
+			->setTag(MinionNBT::INFORMATION, $this->minionInformation->nbtSerialize())
+			->setTag(MinionNBT::INVENTORY, $this->minionInventory->nbtSerialize());
 	}
 
 	public function onUpdate(int $currentTick) : bool{

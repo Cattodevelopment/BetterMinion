@@ -49,7 +49,7 @@ class MinionUpgrade implements MinionNBT{
 		$this->expander = $expander;
 	}
 
-	public function serializeTag() : CompoundTag{
+	public function nbtSerialize() : CompoundTag{
 		return CompoundTag::create()
 			->setByte(MinionNBT::AUTO_SMELTER, (int) $this->autoSmelter)
 			->setByte(MinionNBT::AUTO_SELLER, (int) $this->autoSeller)
@@ -60,7 +60,7 @@ class MinionUpgrade implements MinionNBT{
 	/*
 	 * @param CompoundTag $tag
 	 */
-	public static function deserializeTag(Tag $tag) : self{
+	public static function nbtDeserialize(Tag $tag) : self{
 		if(!$tag instanceof CompoundTag){
 			throw new \InvalidArgumentException("Expected " . CompoundTag::class . ", got " . get_class($tag));
 		}
