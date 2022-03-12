@@ -27,7 +27,7 @@ use function basename;
 use function fmod;
 use function is_a;
 
-final class MinionFactory{
+final class MinionFactory {
 	use SingletonTrait;
 
 	/** @var array<string, string> $minions */

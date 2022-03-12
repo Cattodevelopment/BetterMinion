@@ -9,7 +9,7 @@ use pocketmine\event\Cancellable;
 use pocketmine\event\CancellableTrait;
 use pocketmine\item\Item;
 
-class MinionCollectResourcesEvent extends MinionEvent implements Cancellable{
+class MinionCollectResourcesEvent extends MinionEvent implements Cancellable {
 	use CancellableTrait;
 
 	/**

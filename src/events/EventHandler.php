@@ -22,7 +22,7 @@ use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 
-final class EventHandler implements Listener{
+final class EventHandler implements Listener {
 	use SingletonTrait;
 
 	protected function onInit() : void{

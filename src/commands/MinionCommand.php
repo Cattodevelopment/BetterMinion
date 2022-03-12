@@ -9,7 +9,7 @@ use Mcbeany\BetterMinion\commands\subcommands\GiveCommand;
 use Mcbeany\BetterMinion\commands\subcommands\RemoveCommand;
 use pocketmine\command\CommandSender;
 
-final class MinionCommand extends BaseCommand{
+final class MinionCommand extends BaseCommand {
 	protected function prepare() : void{
 		$this->registerSubCommand(new GiveCommand("give", "Give minion to Player"));
 		$this->registerSubCommand(new RemoveCommand("remove", "Toggle remove mode"));

@@ -20,7 +20,7 @@ use function ucfirst;
  * @method static MinionType MINING()
  */
 
-class MinionType implements MinionNBT{
+class MinionType implements MinionNBT {
 	use EnumTrait;
 
 	protected static function setup() : void{

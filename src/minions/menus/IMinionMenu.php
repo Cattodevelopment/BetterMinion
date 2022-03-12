@@ -7,7 +7,7 @@ namespace Mcbeany\BetterMinion\minions\menus;
 use Mcbeany\BetterMinion\minions\entities\BaseMinion;
 use pocketmine\player\Player;
 
-interface IMinionMenu{
+interface IMinionMenu {
 	public function sendToPlayer() : void;
 
 	public function getMinion() : BaseMinion;

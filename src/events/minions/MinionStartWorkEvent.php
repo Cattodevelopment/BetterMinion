@@ -10,7 +10,7 @@ use pocketmine\event\Cancellable;
 use pocketmine\event\CancellableTrait;
 use pocketmine\world\Position;
 
-class MinionStartWorkEvent extends MinionEvent implements Cancellable{
+class MinionStartWorkEvent extends MinionEvent implements Cancellable {
 	use CancellableTrait;
 
 	public function __construct(

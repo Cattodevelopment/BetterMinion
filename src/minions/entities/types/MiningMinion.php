@@ -25,7 +25,7 @@ use pocketmine\world\sound\BlockPunchSound;
 use function iterator_to_array;
 use function shuffle;
 
-class MiningMinion extends BaseMinion{
+class MiningMinion extends BaseMinion {
 	/** @var Block|null $target */
 	protected mixed $target = null;
 

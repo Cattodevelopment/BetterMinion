@@ -7,7 +7,7 @@ namespace Mcbeany\BetterMinion\utils;
 use Mcbeany\BetterMinion\BetterMinion;
 use pocketmine\plugin\PluginOwnedTrait;
 
-trait SingletonTrait{
+trait SingletonTrait {
 	use PluginOwnedTrait {
 		__construct as private __pluginConstruct;
 	}

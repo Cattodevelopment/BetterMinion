@@ -8,7 +8,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\Tag;
 use function get_class;
 
-class MinionUpgrade implements MinionNBT{
+class MinionUpgrade implements MinionNBT {
 	public function __construct(
 		private bool $autoSmelter = false,
 		private bool $autoSeller = false,

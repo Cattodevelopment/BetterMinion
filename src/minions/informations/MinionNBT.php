@@ -6,7 +6,7 @@ namespace Mcbeany\BetterMinion\minions\informations;
 
 use pocketmine\nbt\tag\Tag;
 
-interface MinionNBT{
+interface MinionNBT {
 	public const INFORMATION = "minionInformation";
 	public const TYPE = "minionType";
 	public const LEVEL = "minionLevel";

@@ -10,7 +10,7 @@ use Mcbeany\BetterMinion\sessions\SessionManager;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 
-final class RemoveCommand extends BaseSubCommand{
+final class RemoveCommand extends BaseSubCommand {
 	protected function prepare() : void{
 		$this->registerArgument(0, new RawStringArgument("player", true));
 	}

@@ -7,6 +7,6 @@ namespace Mcbeany\BetterMinion\events\players;
 use pocketmine\event\Cancellable;
 use pocketmine\event\CancellableTrait;
 
-class PlayerInteractMinionEvent extends PlayerMinionEvent implements Cancellable{
+class PlayerInteractMinionEvent extends PlayerMinionEvent implements Cancellable {
 	use CancellableTrait;
 }

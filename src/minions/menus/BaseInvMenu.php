@@ -14,7 +14,7 @@ use pocketmine\inventory\Inventory;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-abstract class BaseInvMenu extends InvMenu implements IMinionMenu, Listener{
+abstract class BaseInvMenu extends InvMenu implements IMinionMenu, Listener {
 
 	public const INV_TYPE = "";
 

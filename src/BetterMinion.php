@@ -14,7 +14,7 @@ use Mcbeany\BetterMinion\utils\Configuration;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\plugin\PluginBase;
 
-final class BetterMinion extends PluginBase{
+final class BetterMinion extends PluginBase {
 	/**
 	 * @throws HookAlreadyRegistered
 	 */

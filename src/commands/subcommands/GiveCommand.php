@@ -14,7 +14,7 @@ use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use function count;
 
-final class GiveCommand extends BaseSubCommand{
+final class GiveCommand extends BaseSubCommand {
 	protected function prepare() : void{
 		$this->registerArgument(0, new TypeArgument("type"));
 		$this->registerArgument(1, new RawStringArgument("target"));

@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Mcbeany\BetterMinion\sessions;
 
 use Mcbeany\BetterMinion\utils\SingletonTrait;
-use pocketmine\event\Listener;
 use pocketmine\player\Player;
 
-final class SessionManager implements Listener{
+final class SessionManager {
 	use SingletonTrait;
 	/** @var Session[] $sessions */
 	protected array $sessions = [];

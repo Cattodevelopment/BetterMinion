@@ -15,7 +15,7 @@ use function array_map;
 use function array_values;
 use function get_class;
 
-class MinionInventory extends SimpleInventory implements MinionNBT{
+class MinionInventory extends SimpleInventory implements MinionNBT {
 	public function setSize(int $size) : void{
 		$this->slots->setSize($size);
 	}

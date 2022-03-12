@@ -11,7 +11,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
 use function get_class;
 
-class MinionInformation implements MinionNBT{
+class MinionInformation implements MinionNBT {
 	public const MIN_LEVEL = 1;
 	public const MAX_LEVEL = 15;
 	public function __construct(

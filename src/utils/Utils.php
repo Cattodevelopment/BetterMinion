@@ -12,7 +12,7 @@ use pocketmine\item\StringToItemParser;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-final class Utils{
+final class Utils {
 	public static function parseItem(string $input) : ?Item{
 		/** @var StringToItemParser $parser */
 		$parser = StringToItemParser::getInstance();

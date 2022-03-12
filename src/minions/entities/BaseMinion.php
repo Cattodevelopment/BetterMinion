@@ -23,7 +23,7 @@ use pocketmine\player\Player;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-abstract class BaseMinion extends Human{
+abstract class BaseMinion extends Human {
 	public const MAX_TICKDIFF = 20;
 
 	protected UuidInterface $owner;

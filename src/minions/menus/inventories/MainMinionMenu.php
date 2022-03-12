@@ -18,7 +18,7 @@ use function array_search;
 use function floor;
 use function range;
 
-class MainMinionMenu extends BaseInvMenu{
+class MainMinionMenu extends BaseInvMenu {
 	public const INV_TYPE = InvMenuTypeIds::TYPE_DOUBLE_CHEST;
 
 	/** @var int[] $invSlots */

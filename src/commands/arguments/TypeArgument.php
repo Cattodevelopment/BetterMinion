@@ -10,7 +10,7 @@ use pocketmine\command\CommandSender;
 use function array_map;
 use function array_values;
 
-class TypeArgument extends StringEnumArgument{
+class TypeArgument extends StringEnumArgument {
 	public function getTypeName() : string{
 		return "string";
 	}

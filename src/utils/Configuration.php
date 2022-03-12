@@ -9,7 +9,7 @@ use pocketmine\utils\Config;
 use function gettype;
 use function is_string;
 
-class Configuration{
+class Configuration {
 	use SingletonTrait;
 
 	protected function onInit() : void{
