@@ -41,6 +41,24 @@ class MinionType implements MinionNBT {
         return $this->condition;
     }
 
+    public function targetToString() : string{
+        return $this->target instanceof Block ?
+        Utils::blockToString($this->target) :
+        ($this->target ?? "");
+    }
+
+    public function youngTargetToString() : string{
+        return $this->youngTarget instanceof Block ?
+        Utils::blockToString($this->youngTarget) :
+        ($this->youngTarget ?? "");
+    }
+
+    public function conditionToString() : string{
+        return $this->condition === null ?
+        "" :
+        Utils::blockToString($this->condition);
+    }
+
     public static function MINING(?Block $target = null) : self{
         return new MinionType("mining", $target);
     }
@@ -64,15 +82,9 @@ class MinionType implements MinionNBT {
     public function nbtSerialize() : CompoundTag{
         return CompoundTag::create()
             ->setString(MinionNBT::TYPE_NAME, $this->name)
-            ->setString(MinionNBT::TYPE_TARGET, $this->target instanceof Block ?
-                Utils::blockToString($this->target) :
-                $this->target)
-            ->setString(MinionNBT::TYPE_YOUNG_TARGET, $this->youngTarget instanceof Block ?
-                Utils::blockToString($this->youngTarget) :
-                $this->youngTarget ?? "")
-            ->setString(MinionNBT::TYPE_CONDITION, $this->condition === null ?
-                "" :
-                Utils::blockToString($this->condition));
+            ->setString(MinionNBT::TYPE_TARGET, $this->targetToString())
+            ->setString(MinionNBT::TYPE_YOUNG_TARGET, $this->youngTargetToString())
+            ->setString(MinionNBT::TYPE_CONDITION, $this->conditionToString());
     }
 
     public static function nbtDeserialize(CompoundTag $tag) : self{
@@ -89,6 +101,19 @@ class MinionType implements MinionNBT {
             $target,
             $youngTarget,
             Utils::parseBlock($tag->getString(MinionNBT::TYPE_CONDITION))
+        );
+    }
+
+    public function __toString() : string{
+        return $this->name . ($this->target !== null ?
+            ":" . $this->targetToString() :
+            ""
+        ) . ($this->youngTarget !== null ?
+            ":" . $this->youngTargetToString() :
+            ""
+        ) . ($this->condition !== null ?
+            ":" . $this->conditionToString() :
+            ""
         );
     }
 }
