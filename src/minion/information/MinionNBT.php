@@ -21,6 +21,8 @@ interface MinionNBT {
 	public const AUTO_SELLER = "autoSeller";
 	public const COMPACTOR = "compactor";
 	public const EXPANDER = "expander";
+	public const CHEST_LINKER = "chestLinker";
+	public const CUSTOM_SKIN = "customSkin";
 
 	public function nbtSerialize() : CompoundTag;
 
