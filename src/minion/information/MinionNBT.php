@@ -22,10 +22,16 @@ interface MinionNBT {
 	public const COMPACTOR = "compactor";
 	public const EXPANDER = "expander";
 
-	public function nbtSerialize();
-    
+	/**
+	 * @return CompoundTag
+	 */
+	public function nbtSerialize() : CompoundTag;
+
 	/**
 	 * @internal
+	 * @param  CompoundTag $tag
+	 * 
+	 * @return MinionInformation|MinionType|MinionUpgrade
 	 */
 	public static function nbtDeserialize(CompoundTag $tag);
 }

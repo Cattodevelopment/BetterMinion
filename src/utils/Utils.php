@@ -11,7 +11,7 @@ use pocketmine\item\LegacyStringToItemParserException;
 use pocketmine\item\StringToItemParser;
 
 final class Utils {
-    public static function parseItem(string $input) : ?Item{
+	public static function parseItem(string $input) : ?Item{
 		/** @var StringToItemParser $parser */
 		$parser = StringToItemParser::getInstance();
 		/** @var LegacyStringToItemParser $legacyParser */
@@ -23,10 +23,10 @@ final class Utils {
 		}
 	}
 
-    public static function parseBlock(string $input) : ?Block{
-        $block = self::parseItem($input)?->getBlock();
-        return $block?->asItem()->isNull() ? null : $block;
-    }
+	public static function parseBlock(string $input) : ?Block{
+		$block = self::parseItem($input)?->getBlock();
+		return $block?->asItem()->isNull() ? null : $block;
+	}
 
 	public static function blockToString(Block $block) : string{
 		return $block->getId() . ":" . $block->getMeta();

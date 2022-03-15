@@ -6,114 +6,120 @@ namespace Mcbeany\BetterMinion\minion\information;
 
 use Mcbeany\BetterMinion\utils\Utils;
 use pocketmine\block\Block;
+use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\CompoundTag;
+use function class_exists;
 
 class MinionType implements MinionNBT {
-    public function __construct(
-        private string $name,
-        private Block|string|null $target = null,
-        private Block|string|null $youngTarget = null,
-        private ?Block $condition = null
-    ) {
-    }
+	public function __construct(
+		private string $name,
+		private Block|string|null $target = null,
+		private Block|string|null $youngTarget = null,
+		private ?Block $condition = null
+	) {
+	}
 
-    public function getName() : string{
-        return $this->name;
-    }
+	public function getName() : string{
+		return $this->name;
+	}
 
-    public function getBlockTarget() : Block{
-        return $this->target;
-    }
+	public function getBlockTarget() : Block{
+        assert($this->target instanceof Block);
+		return $this->target;
+	}
 
-    public function getEntityTarget() : string{
-        return $this->target;
-    }
+	public function getEntityTarget() : string{
+        assert($this->target !== null and is_a($this->target, Entity::class));
+		return $this->target;
+	}
 
-    public function getYoungEntityTarget() : string{
-        return $this->youngTarget;
-    }
+	public function getYoungBlockTarget() : ?Block{
+        assert($this->youngTarget instanceof Block);
+		return $this->youngTarget;
+	}
 
-    public function getYoungBlockTarget() : ?Block{
-        return $this->youngTarget;
-    }
+	public function getYoungEntityTarget() : string{
+        assert($this->youngTarget !== null and is_a($this->youngTarget, Entity::class));
+		return $this->youngTarget;
+	}
 
-    public function getBlockCondition() : ?Block{
-        return $this->condition;
-    }
+	public function getBlockCondition() : ?Block{
+		return $this->condition;
+	}
 
-    public function targetToString() : string{
-        return $this->target instanceof Block ?
-        Utils::blockToString($this->target) :
-        ($this->target ?? "");
-    }
+	public function targetToString() : string{
+		return $this->target instanceof Block ?
+		Utils::blockToString($this->target) :
+		($this->target ?? "");
+	}
 
-    public function youngTargetToString() : string{
-        return $this->youngTarget instanceof Block ?
-        Utils::blockToString($this->youngTarget) :
-        ($this->youngTarget ?? "");
-    }
+	public function youngTargetToString() : string{
+		return $this->youngTarget instanceof Block ?
+		Utils::blockToString($this->youngTarget) :
+		($this->youngTarget ?? "");
+	}
 
-    public function conditionToString() : string{
-        return $this->condition === null ?
-        "" :
-        Utils::blockToString($this->condition);
-    }
+	public function conditionToString() : string{
+		return $this->condition === null ?
+		"" :
+		Utils::blockToString($this->condition);
+	}
 
-    public static function MINING(?Block $target = null) : self{
-        return new MinionType("mining", $target);
-    }
+	public static function MINING(?Block $target = null) : self{
+		return new MinionType("mining", $target);
+	}
 
-    public static function FARMING(
-        ?Block $target = null,
-        ?Block $youngTarget = null,
-        ?Block $condition = null
-    ) : self{
-        return new MinionType("farming", $target, $youngTarget, $condition);
-    }
+	public static function FARMING(
+		?Block $target = null,
+		?Block $youngTarget = null,
+		?Block $condition = null
+	) : self{
+		return new MinionType("farming", $target, $youngTarget, $condition);
+	}
 
-    public static function LUMBERJACK(
-        ?Block $target = null,
-        ?Block $youngTarget = null,
-        ?Block $condition = null
-    ) : self{
-        return new MinionType("lumberjack", $target, $youngTarget, $condition);
-    }
+	public static function LUMBERJACK(
+		?Block $target = null,
+		?Block $youngTarget = null,
+		?Block $condition = null
+	) : self{
+		return new MinionType("lumberjack", $target, $youngTarget, $condition);
+	}
 
-    public function nbtSerialize() : CompoundTag{
-        return CompoundTag::create()
-            ->setString(MinionNBT::TYPE_NAME, $this->name)
-            ->setString(MinionNBT::TYPE_TARGET, $this->targetToString())
-            ->setString(MinionNBT::TYPE_YOUNG_TARGET, $this->youngTargetToString())
-            ->setString(MinionNBT::TYPE_CONDITION, $this->conditionToString());
-    }
+	public function nbtSerialize() : CompoundTag{
+		return CompoundTag::create()
+			->setString(MinionNBT::TYPE_NAME, $this->name)
+			->setString(MinionNBT::TYPE_TARGET, $this->targetToString())
+			->setString(MinionNBT::TYPE_YOUNG_TARGET, $this->youngTargetToString())
+			->setString(MinionNBT::TYPE_CONDITION, $this->conditionToString());
+	}
 
-    public static function nbtDeserialize(CompoundTag $tag) : self{
-        $target = $tag->getString(MinionNBT::TYPE_TARGET);
-        if(!class_exists($target)){
-            $target = Utils::parseBlock($target);
-        }
-        $youngTarget = $tag->getString(MinionNBT::TYPE_YOUNG_TARGET);
-        if(!class_exists($youngTarget)){
-            $youngTarget = Utils::parseBlock($youngTarget);
-        }
-        return new self(
-            $tag->getString(MinionNBT::TYPE_NAME),
-            $target,
-            $youngTarget,
-            Utils::parseBlock($tag->getString(MinionNBT::TYPE_CONDITION))
-        );
-    }
+	public static function nbtDeserialize(CompoundTag $tag) : self{
+		$target = $tag->getString(MinionNBT::TYPE_TARGET);
+		if(!class_exists($target)){
+			$target = Utils::parseBlock($target);
+		}
+		$youngTarget = $tag->getString(MinionNBT::TYPE_YOUNG_TARGET);
+		if(!class_exists($youngTarget)){
+			$youngTarget = Utils::parseBlock($youngTarget);
+		}
+		return new self(
+			$tag->getString(MinionNBT::TYPE_NAME),
+			$target,
+			$youngTarget,
+			Utils::parseBlock($tag->getString(MinionNBT::TYPE_CONDITION))
+		);
+	}
 
-    public function __toString() : string{
-        return $this->name . ($this->target !== null ?
-            ":" . $this->targetToString() :
-            ""
-        ) . ($this->youngTarget !== null ?
-            ":" . $this->youngTargetToString() :
-            ""
-        ) . ($this->condition !== null ?
-            ":" . $this->conditionToString() :
-            ""
-        );
-    }
+	public function __toString() : string{
+		return $this->name . ($this->target !== null ?
+			":" . $this->targetToString() :
+			""
+		) . ($this->youngTarget !== null ?
+			":" . $this->youngTargetToString() :
+			""
+		) . ($this->condition !== null ?
+			":" . $this->conditionToString() :
+			""
+		);
+	}
 }

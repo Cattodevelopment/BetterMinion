@@ -13,24 +13,25 @@ use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Human;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\world\World;
+use function basename;
+use function strval;
 
 final class MinionFactory {
-    use SingletonTrait;
+	use SingletonTrait;
 
-    /** @var array<string, class-string<BaseMinion>> $minionClasses */
-    private array $minionClasses = [];
-    
-    protected function onInit() : void{
-        $this->register(MiningMinion::class, MinionType::MINING());
-    }
+	/** @var array<string, class-string<BaseMinion>> $minionClasses */
+	private array $minionClasses = [];
 
-    /**
-     * @templete M of BaseMinion
-     * @phpstan-param class-string<M> $className
-     * @phpstan-param MinionType      $type
-     */
-    public function register(string $className, MinionType $type) : void{
-        /** @var EntityFactory $factory */
+	protected function onInit() : void{
+		$this->register(MiningMinion::class, MinionType::MINING());
+	}
+
+	/**
+	 * @phpstan-param class-string<BaseMinion> $className
+	 * @phpstan-param MinionType      $type
+	 */
+	public function register(string $className, MinionType $type) : void{
+		/** @var EntityFactory $factory */
 		$factory = EntityFactory::getInstance();
 		$factory->register(
 			$className,
@@ -39,12 +40,12 @@ final class MinionFactory {
 			},
 			[basename($className)]
 		);
-        $this->minionClasses[strval($type)] = $className;
-    }
+		$this->minionClasses[strval($type)] = $className;
+	}
 
-    public function getMinionClass(MinionType $type) : ?string{
-        return $this->minionClasses[strval($type)] ??
-            $this->minionClasses[$type->getName()] ??
-            null;
-    }
+	public function getMinionClass(MinionType $type) : ?string{
+		return $this->minionClasses[strval($type)] ??
+			$this->minionClasses[$type->getName()] ??
+			null;
+	}
 }

@@ -7,22 +7,22 @@ namespace Mcbeany\BetterMinion\utils;
 use Mcbeany\BetterMinion\BetterMinion;
 
 trait SingletonTrait {
-    /** @var static $instance */
+	/** @var static $instance */
 	private static $instance;
 
-    final private function __construct(
-        private BetterMinion $plugin
-    ) {
-    }
+	final private function __construct(
+		private BetterMinion $plugin
+	) {
+	}
 
-    public function getPlugin() : BetterMinion{
-        return $this->plugin;
-    }
+	public function getPlugin() : BetterMinion{
+		return $this->plugin;
+	}
 
-    protected function onInit() : void{
-    }
+	protected function onInit() : void{
+	}
 
-    public static function init(BetterMinion $plugin) : void{
+	public static function init(BetterMinion $plugin) : void{
 		(self::$instance = new static($plugin))->onInit();
 	}
 

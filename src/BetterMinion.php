@@ -8,7 +8,7 @@ use Mcbeany\BetterMinion\minion\MinionFactory;
 use pocketmine\plugin\PluginBase;
 
 final class BetterMinion extends PluginBase {
-    protected function onEnable() : void{
-        MinionFactory::init($this);
-    }
+	protected function onEnable() : void{
+		MinionFactory::init($this);
+	}
 }

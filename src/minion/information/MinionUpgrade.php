@@ -7,15 +7,15 @@ namespace Mcbeany\BetterMinion\minion\information;
 use pocketmine\nbt\tag\CompoundTag;
 
 class MinionUpgrade implements MinionNBT {
-    public function __construct(
+	public function __construct(
 		private bool $autoSmelter = false,
 		private bool $autoSeller = false,
 		private bool $compactor = false,
 		private bool $expander = false
-    ) {
-    }
+	) {
+	}
 
-    public function hasAutoSmelter() : bool{
+	public function hasAutoSmelter() : bool{
 		return $this->autoSmelter;
 	}
 
@@ -47,7 +47,7 @@ class MinionUpgrade implements MinionNBT {
 		$this->expander = $expander;
 	}
 
-    public function nbtSerialize() : CompoundTag{
+	public function nbtSerialize() : CompoundTag{
 		return CompoundTag::create()
 			->setByte(MinionNBT::AUTO_SMELTER, (int) $this->autoSmelter)
 			->setByte(MinionNBT::AUTO_SELLER, (int) $this->autoSeller)
