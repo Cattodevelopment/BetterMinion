@@ -19,8 +19,8 @@ final class Configuration {
 	}
 
 	public function minion_spawner() : Item{
-        /** @var string $input */
-        $input = $this->pmConfig->get("minion-spawner");
+		/** @var string $input */
+		$input = $this->pmConfig->get("minion-spawner");
 		return Utils::parseItem($input) ?? VanillaItems::NETHER_STAR();
 	}
 }
