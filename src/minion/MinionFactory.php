@@ -6,11 +6,16 @@ namespace Mcbeany\BetterMinion\minion;
 
 use Mcbeany\BetterMinion\minion\entity\BaseMinion;
 use Mcbeany\BetterMinion\minion\entity\types\MiningMinion;
+use Mcbeany\BetterMinion\minion\information\MinionInformation;
+use Mcbeany\BetterMinion\minion\information\MinionNBT;
 use Mcbeany\BetterMinion\minion\information\MinionType;
+use Mcbeany\BetterMinion\minion\information\MinionUpgrade;
+use Mcbeany\BetterMinion\utils\Configuration;
 use Mcbeany\BetterMinion\utils\SingletonTrait;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Human;
+use pocketmine\item\Item;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\world\World;
 use function basename;
@@ -24,6 +29,15 @@ final class MinionFactory {
 
 	protected function onInit() : void{
 		$this->register(MiningMinion::class, MinionType::MINING());
+	}
+
+	public function newSpawner(MinionType $type, ?MinionUpgrade $upgrade = null, int $level = 1) : Item{
+		$item = Configuration::getInstance()->minion_spawner();
+		$item->setNamedTag($item->getNamedTag()->setTag(
+			MinionNBT::INFORMATION,
+			(new MinionInformation($type, $upgrade ?? new MinionUpgrade, $level))->nbtSerialize())
+		);
+		return $item;
 	}
 
 	/**

@@ -8,15 +8,21 @@ use Mcbeany\BetterMinion\utils\Utils;
 use pocketmine\block\Block;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\CompoundTag;
+use function assert;
 use function class_exists;
+use function is_a;
 
 class MinionType implements MinionNBT {
+	/** @var array<string> $types */
+	private static array $types = [];
+
 	public function __construct(
 		private string $name,
 		private Block|string|null $target = null,
 		private Block|string|null $youngTarget = null,
 		private ?Block $condition = null
 	) {
+		self::$types[] = $name;
 	}
 
 	public function getName() : string{
@@ -24,22 +30,22 @@ class MinionType implements MinionNBT {
 	}
 
 	public function getBlockTarget() : Block{
-        assert($this->target instanceof Block);
+		assert($this->target instanceof Block);
 		return $this->target;
 	}
 
 	public function getEntityTarget() : string{
-        assert($this->target !== null and is_a($this->target, Entity::class));
+		assert($this->target !== null and is_a($this->target, Entity::class));
 		return $this->target;
 	}
 
 	public function getYoungBlockTarget() : ?Block{
-        assert($this->youngTarget instanceof Block);
+		assert($this->youngTarget instanceof Block);
 		return $this->youngTarget;
 	}
 
 	public function getYoungEntityTarget() : string{
-        assert($this->youngTarget !== null and is_a($this->youngTarget, Entity::class));
+		assert($this->youngTarget !== null and is_a($this->youngTarget, Entity::class));
 		return $this->youngTarget;
 	}
 
@@ -108,6 +114,13 @@ class MinionType implements MinionNBT {
 			$youngTarget,
 			Utils::parseBlock($tag->getString(MinionNBT::TYPE_CONDITION))
 		);
+	}
+
+	/**
+	 * @return array<string>
+	 */
+	public static function getAll() : array{
+		return self::$types;
 	}
 
 	public function __toString() : string{
