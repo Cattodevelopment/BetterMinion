@@ -7,8 +7,10 @@ namespace Mcbeany\BetterMinion\minion\information;
 use pocketmine\nbt\tag\CompoundTag;
 
 interface MinionNBT {
+	public const OWNER = "owner";
 	public const INFORMATION = "minionInformation";
 	public const LEVEL = "minionLevel";
+	public const INVENTORY = "minionInventory";
 
 	public const TYPE = "minionType";
 	public const TYPE_NAME = "typeName";

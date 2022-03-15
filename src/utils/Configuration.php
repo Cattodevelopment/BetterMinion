@@ -23,4 +23,10 @@ final class Configuration {
 		$input = $this->pmConfig->get("minion-spawner");
 		return Utils::parseItem($input) ?? VanillaItems::NETHER_STAR();
 	}
+
+	public function minion_scale() : float{
+		/** @var float|int $scale */
+		$scale = $this->pmConfig->get("minion-scale");
+		return (float) $scale;
+	}
 }

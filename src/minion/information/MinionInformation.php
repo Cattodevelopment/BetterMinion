@@ -10,7 +10,7 @@ class MinionInformation implements MinionNBT {
 	public const MIN_LEVEL = 1;
 	public const MAX_LEVEL = 15;
 	//TODO: Add lock feature
-	
+
 	public function __construct(
 		private MinionType $type,
 		private MinionUpgrade $upgrade,
