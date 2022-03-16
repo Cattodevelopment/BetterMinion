@@ -18,13 +18,9 @@ interface MinionNBT {
 	public const TYPE_YOUNG_TARGET = "typeYoungTarget";
 	public const TYPE_CONDITION = "typeCondition";
 
-	public const UPGRADE = "minionUpgrade";
-	public const AUTO_SMELTER = "autoSmelter";
-	public const AUTO_SELLER = "autoSeller";
-	public const COMPACTOR = "compactor";
-	public const EXPANDER = "expander";
-	public const CHEST_LINKER = "chestLinker";
-	public const CUSTOM_SKIN = "customSkin";
+	public const UPGRADES = "minionUpgrades";
+	public const UPGRADE_NAME = "upgradeName";
+	public const UPGRADE_TOGGLE = "upgradeToggle";
 
 	public function nbtSerialize() : CompoundTag;
 

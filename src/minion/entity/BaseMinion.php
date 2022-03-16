@@ -29,7 +29,7 @@ abstract class BaseMinion extends Human {
 	protected UpgradeManager $upgradeManager;
 
 	protected int $tickWait = 0, $tickWork = 0;
-	protected bool $isWorking = true;
+	protected bool $working = true;
 
 	public function __construct(
 		Location $location,
@@ -69,16 +69,16 @@ abstract class BaseMinion extends Human {
 	}
 
 	public function isWorking() : bool{
-		return $this->isWorking;
+		return $this->working;
 	}
 
 	public function stopWorking() : void{
-		$this->isWorking = false;
+		$this->working = false;
 		$this->tickWork = 0;
 	}
 
 	public function continueWorking() : void{
-		$this->isWorking = true;
+		$this->working = true;
 		$this->setNameTag();
 	}
 
@@ -145,13 +145,13 @@ abstract class BaseMinion extends Human {
 
 	public function onUpdate(int $currentTick) : bool{
 		if($this->minionInventory->isFull()){
-			if($this->isWorking){
+			if($this->working){
 				$this->stopWorking();
 				$this->setNameTag("My inventory is full :<");
 				return true;
 			}
 		}
-		if(!$this->isWorking){
+		if(!$this->working){
 			$this->continueWorking();
 			return true;
 		}
@@ -159,7 +159,7 @@ abstract class BaseMinion extends Human {
 	}
 
 	protected function entityBaseTick(int $tickDiff = 1) : bool{
-		if(!$this->isWorking){
+		if(!$this->working){
 			return parent::entityBaseTick($tickDiff);
 		}
 		$this->minionAnimationTick($tickDiff);

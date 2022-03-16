@@ -10,6 +10,7 @@ use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\CompoundTag;
 use function assert;
 use function class_exists;
+use function in_array;
 use function is_a;
 
 class MinionType implements MinionNBT {
@@ -22,7 +23,9 @@ class MinionType implements MinionNBT {
 		private Block|string|null $youngTarget = null,
 		private ?Block $condition = null
 	) {
-		self::$types[] = $name;
+		if(!in_array($name, self::$types, true)){
+			self::$types[] = $name;
+		}
 	}
 
 	public function getName() : string{
