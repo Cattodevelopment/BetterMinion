@@ -24,7 +24,7 @@ use pocketmine\player\Player;
 use pocketmine\world\World;
 use function basename;
 use function fmod;
-use function strval;
+use function serialize;
 
 final class MinionFactory {
 	use SingletonTrait;
@@ -53,7 +53,7 @@ final class MinionFactory {
 			},
 			[basename($className)]
 		);
-		$this->minionClasses[strval($type)] = $className;
+		$this->minionClasses[serialize($type)] = $className;
 	}
 
 	public function addDefaultUpgrade(MinionUpgrade $upgrade) : void{
@@ -61,8 +61,8 @@ final class MinionFactory {
 	}
 
 	public function getMinionClass(MinionType $type) : ?string{
-		return $this->minionClasses[strval($type)] ??
-			$this->minionClasses[$type->getName()] ??
+		return $this->minionClasses[serialize($type)] ??
+			$this->minionClasses[serialize(new MinionType($type->getName()))] ??
 			null;
 	}
 
