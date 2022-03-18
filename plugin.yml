@@ -2,4 +2,3 @@ name: BetterMinion
 version: 1.0.0
 main: Mcbeany\BetterMinion\BetterMinion
 api: 4.0.0
-src-namespace-prefix: Mcbeany\BetterMinion
