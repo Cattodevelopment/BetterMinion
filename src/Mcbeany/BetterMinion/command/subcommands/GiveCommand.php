@@ -2,53 +2,71 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\command\subcommands;
+namespace Mcbeany\BetterMinion\commands\subcommands;
 
 use CortexPE\Commando\args\RawStringArgument;
 use CortexPE\Commando\BaseSubCommand;
-use Mcbeany\BetterMinion\command\argument\TypeArgument;
-use Mcbeany\BetterMinion\minion\MinionFactory;
+use CortexPE\Commando\exception\ArgumentOrderException;
+use Mcbeany\BetterMinion\BetterMinion;
+use Mcbeany\BetterMinion\commands\arguments\PlayerArgument;
+use Mcbeany\BetterMinion\commands\arguments\TypeArgument;
+use Mcbeany\BetterMinion\minions\MinionType;
+use Mcbeany\BetterMinion\utils\Language;
+use Mcbeany\BetterMinion\utils\Utils;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\command\CommandSender;
+use pocketmine\item\LegacyStringToItemParserException;
 use pocketmine\player\Player;
+use function count;
 
-final class GiveCommand extends BaseSubCommand{
-	public function __construct() {
-		parent::__construct("give", "Give player a minion spawner");
-	}
+class GiveCommand extends BaseSubCommand{
 
-	protected function prepare() : void{
-		$this->registerArgument(0, new TypeArgument("type"));
-		$this->registerArgument(1, new RawStringArgument("target"));
-		$this->registerArgument(2, new RawStringArgument("player", true));
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
+		if(count($args) < 2){
+			$sender->sendMessage("Usage: /minion give <type> <target> <player>");
+			return;
+		}
+		$type = MinionType::fromString($args["type"]);
+		if($type === null){
+			$sender->sendMessage(Language::type_not_found($args["type"]));
+		}
+		try{
+			$target = Utils::parseItem($args["target"])->getBlock();
+			if($target->getId() !== BlockLegacyIds::AIR){
+				/** @var Player|null $player */
+				$player = $sender;
+				if(!$sender instanceof Player){
+					if(!isset($args["player"])){
+						$sender->sendMessage(Language::no_selected_player());
+						return;
+					}
+					$player = $sender->getServer()->getPlayerByPrefix($args["player"]);
+				}
+				if($player === null){
+					$sender->sendMessage(Language::player_not_found($args["player"]));
+					return;
+				}
+				$item = BetterMinion::getInstance()->createSpawner($type, $target->getIdInfo());
+				$player->sendMessage(Language::received_minion_spawner($type, $target));
+				if(!empty($player->getInventory()->addItem($item))){
+					$player->sendMessage(Language::inventory_is_full());
+				}
+				$sender->sendMessage(Language::gave_player_spawner($player, $type, $target));
+			}
+			return;
+		}catch(LegacyStringToItemParserException){
+		}
+
+		$sender->sendMessage(Language::target_not_found($args["target"]));
 	}
 
 	/**
-	 * @param array<string, mixed> $args
+	 * @throws ArgumentOrderException
 	 */
-	public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
-		/** @var string $target */
-		$target = $args["target"];
-		/** @var string $typeName */
-		$typeName = $args["type"];
-		$type = MinionFactory::getInstance()->getType($typeName, $target);
-		if($type === null){
-			return;
-		}
-		$player = null;
-		if($sender instanceof Player){
-			$player = $sender;
-		}
-		if(isset($args["player"])){
-			/** @var string $name */
-			$name = $args["player"];
-			$player = $sender->getServer()->getPlayerByPrefix($name);
-		}
-		if($player === null){
-			return;
-		}
-		$extras = $player->getInventory()->addItem(MinionFactory::getInstance()->newSpawner($type));
-		if(!empty($extras)){
-			$player->dropItem(...$extras);
-		}
+	protected function prepare() : void{
+		$this->setPermission("betterminion.commands.give");
+		$this->registerArgument(0, new TypeArgument());
+		$this->registerArgument(1, new RawStringArgument("target", true));
+		$this->registerArgument(2, new PlayerArgument());
 	}
 }

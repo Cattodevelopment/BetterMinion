@@ -2,39 +2,41 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\command\subcommands;
+namespace Mcbeany\BetterMinion\commands\subcommands;
 
-use CortexPE\Commando\args\RawStringArgument;
 use CortexPE\Commando\BaseSubCommand;
-use Mcbeany\BetterMinion\session\SessionManager;
+use CortexPE\Commando\exception\ArgumentOrderException;
+use Mcbeany\BetterMinion\commands\arguments\PlayerArgument;
+use Mcbeany\BetterMinion\sessions\SessionManager;
+use Mcbeany\BetterMinion\utils\Language;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 
-final class RemoveCommand extends BaseSubCommand{
-	public function __construct() {
-		parent::__construct("remove", "Toggle remove mode");
-	}
+class RemoveCommand extends BaseSubCommand{
 
-	protected function prepare() : void{
-		$this->registerArgument(0, new RawStringArgument("player", true));
+	public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
+		$player = $sender;
+		if(!$sender instanceof Player){
+			if (!isset($args["player"])) {
+				$sender->sendMessage("Usage: /minion remove <player>");
+				return;
+			}
+			$player = $sender->getServer()->getPlayerByPrefix($args["player"]);
+		}
+		if($player === null){
+			$sender->sendMessage(Language::player_not_found($args["player"]));
+			return;
+		}
+		$session = SessionManager::getSession($player);
+		$sender->sendMessage(Language::toggled_remove_mode($session->toggleRemoveMode()));
 	}
 
 	/**
-	 * @param array<string, mixed> $args
+	 * @throws ArgumentOrderException
 	 */
-	public function onRun(CommandSender $sender, string $aliasUsed, array $args) : void{
-		$player = null;
-		if($sender instanceof Player){
-			$player = $sender;
-		}
-		if(isset($args["player"])){
-			/** @var string $name */
-			$name = $args["player"];
-			$player = $sender->getServer()->getPlayerByPrefix($name);
-		}
-		if($player === null){
-			return;
-		}
-		SessionManager::getInstance()->getSession($player)?->toggleRemoveMode();
+	protected function prepare() : void{
+		$this->setPermission("betterminion.commands.remove");
+		$this->registerArgument(0, new PlayerArgument());
 	}
+
 }
