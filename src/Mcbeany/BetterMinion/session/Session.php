@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\session;
+namespace Mcbeany\BetterMinion\sessions;
 
 class Session{
-	protected bool $removeMode = false;
+
+	private bool $removeMode = false;
 
 	public function toggleRemoveMode() : bool{
 		return $this->removeMode = !$this->removeMode;
@@ -14,4 +15,5 @@ class Session{
 	public function inRemoveMode() : bool{
 		return $this->removeMode;
 	}
+
 }

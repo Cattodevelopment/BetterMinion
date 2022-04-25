@@ -2,26 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\session;
+namespace Mcbeany\BetterMinion\sessions;
 
-use Mcbeany\BetterMinion\utils\SingletonTrait;
 use pocketmine\player\Player;
 
-final class SessionManager{
-	use SingletonTrait;
+class SessionManager{
 
 	/** @var Session[] $sessions */
-	protected array $sessions = [];
+	protected static array $sessions = [];
 
-	public function createSession(Player $player) : void{
-		$this->sessions[$player->getId()] = new Session;
+	public static function createSession(Player $player) : void{
+		self::$sessions[$player->getId()] = new Session();
 	}
 
-	public function getSession(Player $player) : ?Session{
-		return $this->sessions[$player->getId()] ?? null;
+	public static function getSession(Player $player) : ?Session{
+		return self::$sessions[$player->getId()] ?? null;
 	}
 
-	public function destroySession(Player $player) : void{
-		unset($this->sessions[$player->getId()]);
+	public static function destroySession(Player $player) : void{
+		unset(self::$sessions[$player->getId()]);
 	}
+
 }
