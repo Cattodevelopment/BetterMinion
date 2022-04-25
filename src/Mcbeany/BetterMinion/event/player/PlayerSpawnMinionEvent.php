@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mcbeany\BetterMinion\event\player;
+namespace Mcbeany\BetterMinion\events\player;
 
 use pocketmine\event\Cancellable;
 use pocketmine\event\CancellableTrait;
